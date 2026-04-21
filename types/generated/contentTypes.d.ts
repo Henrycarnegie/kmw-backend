@@ -609,13 +609,19 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    endDate: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::membership.membership'
     > &
       Schema.Attribute.Private;
+    Plan: Schema.Attribute.Enumeration<['basic', 'premium']>;
     publishedAt: Schema.Attribute.DateTime;
+    StartDate: Schema.Attribute.DateTime;
+    Subscription: Schema.Attribute.Enumeration<
+      ['active', 'inactive', 'expired']
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -637,6 +643,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    Amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -646,6 +653,8 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'api::payment.payment'
     > &
       Schema.Attribute.Private;
+    paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
+      Schema.Attribute.DefaultTo<'pending'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
