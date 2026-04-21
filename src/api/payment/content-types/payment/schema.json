@@ -10,5 +10,20 @@
     "draftAndPublish": true
   },
   "pluginOptions": {},
-  "attributes": {}
+  "attributes": {
+    "Amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "paymentStatus": {
+      "type": "enumeration",
+      "required": false,
+      "default": "pending",
+      "enum": [
+        "pending",
+        "paid",
+        "failed"
+      ]
+    }
+  }
 }

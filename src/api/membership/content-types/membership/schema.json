@@ -15,6 +15,27 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
+    },
+    "Plan": {
+      "type": "enumeration",
+      "enum": [
+        "basic",
+        "premium"
+      ]
+    },
+    "Subscription": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "inactive",
+        "expired"
+      ]
+    },
+    "StartDate": {
+      "type": "datetime"
+    },
+    "endDate": {
+      "type": "datetime"
     }
   }
 }
