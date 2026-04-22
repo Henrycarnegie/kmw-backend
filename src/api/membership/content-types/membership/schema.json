@@ -14,14 +14,8 @@
     "users_permissions_user": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
-    },
-    "Plan": {
-      "type": "enumeration",
-      "enum": [
-        "basic",
-        "premium"
-      ]
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "membership"
     },
     "Subscription": {
       "type": "enumeration",
@@ -36,6 +30,12 @@
     },
     "endDate": {
       "type": "datetime"
+    },
+    "payments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment.payment",
+      "mappedBy": "membership"
     }
   }
 }
