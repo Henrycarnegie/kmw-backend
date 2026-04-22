@@ -24,6 +24,12 @@
         "paid",
         "failed"
       ]
+    },
+    "membership": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::membership.membership",
+      "inversedBy": "payments"
     }
   }
 }
