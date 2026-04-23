@@ -11,11 +11,27 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "isFree": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "language": {
+      "type": "string"
+    },
+    "is_published": {
       "type": "boolean"
     },
-    "price": {
-      "type": "decimal"
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     }
   }
 }

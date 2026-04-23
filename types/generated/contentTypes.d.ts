@@ -577,15 +577,18 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    isFree: Schema.Attribute.Boolean;
+    description: Schema.Attribute.Text;
+    is_published: Schema.Attribute.Boolean;
+    language: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course.course'
     > &
       Schema.Attribute.Private;
-    price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
+    thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -624,12 +627,52 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
-  collectionName: 'memberships';
+export interface ApiModuleModule extends Struct.CollectionTypeSchema {
+  collectionName: 'modules';
   info: {
-    displayName: 'Membership';
-    pluralName: 'memberships';
-    singularName: 'membership';
+    displayName: 'Module';
+    pluralName: 'modules';
+    singularName: 'module';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    attachments: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    content: Schema.Attribute.Blocks;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    exercise: Schema.Attribute.Text;
+    exercise_type: Schema.Attribute.Enumeration<
+      ['text_answer, link_submission, file_upload']
+    >;
+    external_links: Schema.Attribute.JSON;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::module.module'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    video_url: Schema.Attribute.String;
+  };
+}
+
+export interface ApiSubmissionSubmission extends Struct.CollectionTypeSchema {
+  collectionName: 'submissions';
+  info: {
+    displayName: 'Submission';
+    pluralName: 'submissions';
+    singularName: 'submission';
   };
   options: {
     draftAndPublish: true;
@@ -638,19 +681,22 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    endDate: Schema.Attribute.DateTime;
+    file: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::membership.membership'
+      'api::submission.submission'
     > &
       Schema.Attribute.Private;
-    payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
+    module: Schema.Attribute.Relation<'oneToOne', 'api::module.module'>;
     publishedAt: Schema.Attribute.DateTime;
-    StartDate: Schema.Attribute.DateTime;
-    Subscription: Schema.Attribute.Enumeration<
-      ['active', 'inactive', 'expired']
-    >;
+    state: Schema.Attribute.Enumeration<['submitted, reviewed, approved']>;
+    submitted_link: Schema.Attribute.String;
+    teacher_feedback: Schema.Attribute.Text;
+    text_answer: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -658,67 +704,6 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
-  };
-}
-
-export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
-  collectionName: 'payments';
-  info: {
-    displayName: 'Payment';
-    pluralName: 'payments';
-    singularName: 'payment';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    Amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::payment.payment'
-    > &
-      Schema.Attribute.Private;
-    membership: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::membership.membership'
-    >;
-    paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
-      Schema.Attribute.DefaultTo<'pending'>;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
-  collectionName: 'webinars';
-  info: {
-    displayName: 'Webinar';
-    pluralName: 'webinars';
-    singularName: 'webinar';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::webinar.webinar'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
   };
 }
 
@@ -1242,9 +1227,8 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::course.course': ApiCourseCourse;
       'api::global.global': ApiGlobalGlobal;
-      'api::membership.membership': ApiMembershipMembership;
-      'api::payment.payment': ApiPaymentPayment;
-      'api::webinar.webinar': ApiWebinarWebinar;
+      'api::module.module': ApiModuleModule;
+      'api::submission.submission': ApiSubmissionSubmission;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
