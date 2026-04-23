@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sel_projects",
+  "info": {
+    "singularName": "sel-project",
+    "pluralName": "sel-projects",
+    "displayName": "SEL Project"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "draft, active, completed"
+      ]
+    },
+    "project_url": {
+      "type": "string"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "sel_project"
+    }
+  }
+}

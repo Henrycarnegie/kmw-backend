@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "resources",
+  "info": {
+    "singularName": "resource",
+    "pluralName": "resources",
+    "displayName": "Resource"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "grade": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "member_only": {
+      "type": "boolean",
+      "default": false
+    },
+    "external_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

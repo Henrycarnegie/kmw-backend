@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "modules",
+  "info": {
+    "singularName": "module",
+    "pluralName": "modules",
+    "displayName": "Module"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "blocks"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "video_url": {
+      "type": "string"
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "external_links": {
+      "type": "json"
+    },
+    "exercise": {
+      "type": "text"
+    },
+    "exercise_type": {
+      "type": "enumeration",
+      "enum": [
+        "text_answer, link_submission, file_upload"
+      ]
+    },
+    "quiz": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::quiz.quiz",
+      "mappedBy": "module"
+    },
+    "submissions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::submission.submission",
+      "mappedBy": "module"
+    },
+    "unit_progresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-progress.unit-progress",
+      "mappedBy": "module"
+    }
+  }
+}
