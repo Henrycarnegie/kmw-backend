@@ -12,7 +12,8 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "content": {
       "type": "blocks"
@@ -44,6 +45,24 @@
       "enum": [
         "text_answer, link_submission, file_upload"
       ]
+    },
+    "quiz": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::quiz.quiz",
+      "mappedBy": "module"
+    },
+    "submissions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::submission.submission",
+      "mappedBy": "module"
+    },
+    "unit_progresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-progress.unit-progress",
+      "mappedBy": "module"
     }
   }
 }

@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "enrollments",
+  "info": {
+    "singularName": "enrollment",
+    "pluralName": "enrollments",
+    "displayName": "Enrollment"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "progress": {
+      "type": "decimal"
+    },
+    "completed": {
+      "type": "boolean"
+    },
+    "enrolled_at": {
+      "type": "datetime"
+    },
+    "last_activity": {
+      "type": "datetime"
+    },
+    "last_quiz_score": {
+      "type": "decimal"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "enrollments"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "enrollments"
+    },
+    "unit_progresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-progress.unit-progress",
+      "mappedBy": "enrollment"
+    }
+  }
+}

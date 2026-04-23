@@ -16,6 +16,7 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@strapi/plugin-cloud": "5.42.1",
     "@strapi/plugin-documentation": "^5.42.1",
     "@strapi/plugin-users-permissions": "5.42.1",
