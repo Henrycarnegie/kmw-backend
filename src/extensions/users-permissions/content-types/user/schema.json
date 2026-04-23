@@ -66,11 +66,53 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "membership": {
+   "membership": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::membership.membership",
       "inversedBy": "users_permissions_user"
+    },
+    "enrollments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::enrollment.enrollment",
+      "mappedBy": "users_permissions_user"
+    },
+    "submissions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::submission.submission",
+      "mappedBy": "learner"
+    },
+    "webinar_registrations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::webinar-registration.webinar-registration",
+      "mappedBy": "learner"
+    },
+    "forum_threads": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::forum-thread.forum-thread",
+      "mappedBy": "users_permissions_user"
+    },
+    "forum_reply": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::forum-reply.forum-reply",
+      "mappedBy": "users_permissions_user"
+    },
+    "sel_project": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::sel-project.sel-project",
+      "mappedBy": "users_permissions_user"
+    },
+    "certificates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::certificate.certificate",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

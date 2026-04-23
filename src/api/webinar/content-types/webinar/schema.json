@@ -10,5 +10,49 @@
     "draftAndPublish": true
   },
   "pluginOptions": {},
-  "attributes": {}
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "scheduled_at": {
+      "type": "datetime"
+    },
+    "recording_url": {
+      "type": "string"
+    },
+    "meeting_url": {
+      "type": "string"
+    },
+    "is_free": {
+      "type": "boolean",
+      "default": false
+    },
+    "max_capacity": {
+      "type": "integer"
+    },
+    "waitlist_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "webinar_registrations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::webinar-registration.webinar-registration",
+      "mappedBy": "webinar"
+    }
+  }
 }

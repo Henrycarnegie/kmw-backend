@@ -36,15 +36,23 @@
     "teacher_feedback": {
       "type": "text"
     },
-    "users_permissions_user": {
+    "learner": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "submissions"
     },
     "module": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::module.module"
+      "relation": "manyToOne",
+      "target": "api::module.module",
+      "inversedBy": "submissions"
+    },
+    "submitted_at": {
+      "type": "datetime"
+    },
+    "reviewed_at": {
+      "type": "datetime"
     }
   }
 }

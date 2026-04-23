@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "webinar_registrations",
+  "info": {
+    "singularName": "webinar-registration",
+    "pluralName": "webinar-registrations",
+    "displayName": "Webinar Registration"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "confirmed, waitlisted, cancelled"
+      ]
+    },
+    "waitlist_position": {
+      "type": "integer"
+    },
+    "registered_at": {
+      "type": "datetime"
+    },
+    "cancelled_at": {
+      "type": "datetime"
+    },
+    "promoted_at": {
+      "type": "datetime"
+    },
+    "learner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "webinar_registrations"
+    },
+    "webinar": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::webinar.webinar",
+      "inversedBy": "webinar_registrations"
+    }
+  }
+}

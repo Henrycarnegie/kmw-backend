@@ -12,16 +12,20 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "description": {
-      "type": "text"
+      "type": "text",
+      "required": false
     },
     "language": {
-      "type": "string"
+      "type": "string",
+      "default": "en"
     },
     "is_published": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "thumbnail": {
       "type": "media",
@@ -32,6 +36,18 @@
         "videos",
         "audios"
       ]
+    },
+    "enrollments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::enrollment.enrollment",
+      "mappedBy": "course"
+    },
+    "certificates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::certificate.certificate",
+      "mappedBy": "course"
     }
   }
 }
