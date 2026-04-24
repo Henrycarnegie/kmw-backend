@@ -635,10 +635,11 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    accessLevel: Schema.Attribute.Enumeration<['free_user', 'member']>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    endDate: Schema.Attribute.DateTime;
+    endDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -647,15 +648,19 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
-    StartDate: Schema.Attribute.DateTime;
-    Subscription: Schema.Attribute.Enumeration<
-      ['active', 'inactive', 'expired']
+    StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    subscriptionStatus: Schema.Attribute.Enumeration<
+      ['pending_payment', 'active', 'inactive', 'expired']
+    >;
+    subscrition_plans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscrition-plan.subscrition-plan'
     >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     users_permissions_user: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
   };
@@ -682,12 +687,52 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'api::payment.payment'
     > &
       Schema.Attribute.Private;
-    membership: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::membership.membership'
-    >;
     paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
       Schema.Attribute.DefaultTo<'pending'>;
+    Provider: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    transactionId: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiSubscritionPlanSubscritionPlan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'subscrition_plans';
+  info: {
+    displayName: 'SubscritionPlan';
+    pluralName: 'subscrition-plans';
+    singularName: 'subscrition-plan';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'MEMBER']> &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discountPercentage: Schema.Attribute.Integer;
+    Duration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscrition-plan.subscrition-plan'
+    > &
+      Schema.Attribute.Private;
+    memberships: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membership.membership'
+    >;
+    Name: Schema.Attribute.String & Schema.Attribute.Required;
+    Price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1197,8 +1242,8 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
-    membership: Schema.Attribute.Relation<
-      'oneToOne',
+    memberships: Schema.Attribute.Relation<
+      'oneToMany',
       'api::membership.membership'
     >;
     password: Schema.Attribute.Password &
@@ -1206,6 +1251,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1244,6 +1290,7 @@ declare module '@strapi/strapi' {
       'api::global.global': ApiGlobalGlobal;
       'api::membership.membership': ApiMembershipMembership;
       'api::payment.payment': ApiPaymentPayment;
+      'api::subscrition-plan.subscrition-plan': ApiSubscritionPlanSubscritionPlan;
       'api::webinar.webinar': ApiWebinarWebinar;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

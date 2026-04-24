@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "subscrition_plans",
+  "info": {
+    "singularName": "subscrition-plan",
+    "pluralName": "subscrition-plans",
+    "displayName": "SubscritionPlan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Price": {
+      "type": "decimal",
+      "required": true
+    },
+    "Duration": {
+      "type": "integer",
+      "required": true
+    },
+    "Name": {
+      "type": "string",
+      "required": true
+    },
+    "accessLevel": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "FREE_USER",
+        "MEMBER"
+      ]
+    },
+    "discountPercentage": {
+      "type": "integer"
+    },
+    "memberships": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::membership.membership"
+    }
+  }
+}
