@@ -22,6 +22,28 @@
     },
     "requiresMembership": {
       "type": "boolean"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "language": {
+      "type": "string"
+    },
+    "is_published": {
+      "type": "boolean"
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     }
   }
 }
