@@ -65,6 +65,9 @@
         "paid",
         "discounted_for_Members"
       ]
+    },
+    "is_membership_free": {
+      "type": "boolean"
     }
   }
 }
