@@ -13,29 +13,54 @@
   "attributes": {
     "users_permissions_user": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "mappedBy": "membership"
+      "inversedBy": "memberships"
     },
-    "Subscription": {
+    "subscriptionStatus": {
       "type": "enumeration",
       "enum": [
+        "pending_payment",
         "active",
         "inactive",
         "expired"
       ]
     },
     "StartDate": {
-      "type": "datetime"
+      "type": "datetime",
+      "required": true
     },
     "endDate": {
-      "type": "datetime"
+      "type": "datetime",
+      "required": true
+    },
+    "accessLevel": {
+      "type": "enumeration",
+      "enum": [
+        "free_user",
+        "member"
+      ]
+    },
+    "subscrition_plans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::subscrition-plan.subscrition-plan"
     },
     "payments": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::payment.payment",
-      "mappedBy": "membership"
+      "target": "api::payment.payment"
+    },
+    "membershipStatus": {
+      "type": "enumeration",
+      "enum": [
+        "pending_form",
+        "pending_payment",
+        "pending_approval",
+        "active",
+        "rejected",
+        "expired"
+      ]
     }
   }
 }

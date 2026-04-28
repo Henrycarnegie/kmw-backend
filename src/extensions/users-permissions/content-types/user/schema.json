@@ -67,8 +67,9 @@
       "configurable": false
     },
    "membership": {
+    "memberships": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::membership.membership",
       "inversedBy": "users_permissions_user"
     },
@@ -112,6 +113,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::certificate.certificate",
+      "mappedBy": "users_permissions_user"
+    },
+    "payments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment.payment",
       "mappedBy": "users_permissions_user"
     }
   }

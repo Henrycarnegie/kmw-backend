@@ -620,6 +620,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    isFreeForMembers: Schema.Attribute.Boolean;
     description: Schema.Attribute.Text;
     enrollments: Schema.Attribute.Relation<
       'oneToMany',
@@ -633,6 +634,10 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'api::course.course'
     > &
       Schema.Attribute.Private;
+    memberDiscountPrice: Schema.Attribute.Decimal;
+    price: Schema.Attribute.Decimal;
+    publishedAt: Schema.Attribute.DateTime;
+    requiresMembership: Schema.Attribute.Boolean;
     publishedAt: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -799,27 +804,42 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    accessLevel: Schema.Attribute.Enumeration<['free_user', 'member']>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    endDate: Schema.Attribute.DateTime;
+    endDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::membership.membership'
     > &
       Schema.Attribute.Private;
+    membershipStatus: Schema.Attribute.Enumeration<
+      [
+        'pending_form',
+        'pending_payment',
+        'pending_approval',
+        'active',
+        'rejected',
+        'expired',
+      ]
+    >;
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
-    StartDate: Schema.Attribute.DateTime;
-    Subscription: Schema.Attribute.Enumeration<
-      ['active', 'inactive', 'expired']
+    StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    subscriptionStatus: Schema.Attribute.Enumeration<
+      ['pending_payment', 'active', 'inactive', 'expired']
+    >;
+    subscrition_plans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscrition-plan.subscrition-plan'
     >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     users_permissions_user: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
   };
@@ -895,12 +915,56 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'api::payment.payment'
     > &
       Schema.Attribute.Private;
-    membership: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::membership.membership'
+    paymentDate: Schema.Attribute.DateTime;
+    paymentMethod: Schema.Attribute.Enumeration<
+      ['stripe', 'paypal', 'bank_transfer']
     >;
     paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
       Schema.Attribute.DefaultTo<'pending'>;
+    Provider: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    transactionReference: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiSubscritionPlanSubscritionPlan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'subscrition_plans';
+  info: {
+    displayName: 'subscription_plans';
+    pluralName: 'subscrition-plans';
+    singularName: 'subscrition-plan';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'MEMBER']> &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discountPercentage: Schema.Attribute.Integer;
+    Duration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscrition-plan.subscrition-plan'
+    > &
+      Schema.Attribute.Private;
+    memberships: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membership.membership'
+    >;
+    Name: Schema.Attribute.String & Schema.Attribute.Required;
+    Price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1137,6 +1201,9 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    accessType: Schema.Attribute.Enumeration<
+      ['free', 'Members_only', 'paid', 'discounted_for_Members']
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1155,6 +1222,7 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     scheduled_at: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    requiresMembership: Schema.Attribute.Boolean;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1658,8 +1726,8 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
-    membership: Schema.Attribute.Relation<
-      'oneToOne',
+    memberships: Schema.Attribute.Relation<
+      'oneToMany',
       'api::membership.membership'
     >;
     password: Schema.Attribute.Password &
@@ -1667,6 +1735,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1725,6 +1794,7 @@ declare module '@strapi/strapi' {
       'api::quiz.quiz': ApiQuizQuiz;
       'api::resource.resource': ApiResourceResource;
       'api::sel-project.sel-project': ApiSelProjectSelProject;
+      'api::subscrition-plan.subscrition-plan': ApiSubscritionPlanSubscritionPlan;
       'api::submission.submission': ApiSubmissionSubmission;
       'api::unit-progress.unit-progress': ApiUnitProgressUnitProgress;
       'api::webinar-registration.webinar-registration': ApiWebinarRegistrationWebinarRegistration;

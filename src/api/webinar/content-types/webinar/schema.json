@@ -53,6 +53,18 @@
       "relation": "oneToMany",
       "target": "api::webinar-registration.webinar-registration",
       "mappedBy": "webinar"
+    },
+    "requiresMembership": {
+      "type": "boolean"
+    },
+    "accessType": {
+      "type": "enumeration",
+      "enum": [
+        "free",
+        "Members_only",
+        "paid",
+        "discounted_for_Members"
+      ]
     }
   }
 }
