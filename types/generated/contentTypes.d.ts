@@ -638,18 +638,26 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
   };
   attributes: {
     accessLevel: Schema.Attribute.Enumeration<['free_user', 'member']>;
-    approvedByAdmin: Schema.Attribute.Boolean;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     endDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    googleFormSubmitted: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::membership.membership'
     > &
       Schema.Attribute.Private;
+    membershipStatus: Schema.Attribute.Enumeration<
+      [
+        'pending_form',
+        'pending_payment',
+        'pending_approval',
+        'active',
+        'rejected',
+        'expired',
+      ]
+    >;
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
     StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
@@ -714,7 +722,7 @@ export interface ApiSubscritionPlanSubscritionPlan
   extends Struct.CollectionTypeSchema {
   collectionName: 'subscrition_plans';
   info: {
-    displayName: 'SubscritionPlan';
+    displayName: 'subscription_plans';
     pluralName: 'subscrition-plans';
     singularName: 'subscrition-plan';
   };

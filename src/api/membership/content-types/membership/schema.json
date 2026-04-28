@@ -51,11 +51,16 @@
       "relation": "oneToMany",
       "target": "api::payment.payment"
     },
-    "googleFormSubmitted": {
-      "type": "boolean"
-    },
-    "approvedByAdmin": {
-      "type": "boolean"
+    "membershipStatus": {
+      "type": "enumeration",
+      "enum": [
+        "pending_form",
+        "pending_payment",
+        "pending_approval",
+        "active",
+        "rejected",
+        "expired"
+      ]
     }
   }
 }
