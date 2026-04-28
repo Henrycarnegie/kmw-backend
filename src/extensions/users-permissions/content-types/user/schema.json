@@ -91,6 +91,12 @@
       "target": "api::webinar-registration.webinar-registration",
       "mappedBy": "learner"
     },
+    "enrollments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::enrollment.enrollment",
+      "mappedBy": "users_permissions_user"
+    }
     "forum_threads": {
       "type": "relation",
       "relation": "oneToMany",
