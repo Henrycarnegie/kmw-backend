@@ -53,6 +53,9 @@
       "relation": "oneToMany",
       "target": "api::webinar-registration.webinar-registration",
       "mappedBy": "webinar"
+    },
+    "is_membership_free": {
+      "type": "boolean"
     }
   }
 }

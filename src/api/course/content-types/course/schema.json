@@ -48,6 +48,17 @@
       "relation": "oneToMany",
       "target": "api::certificate.certificate",
       "mappedBy": "course"
+    },
+    "article": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::article.article"
+    },
+    "is_free": {
+      "type": "boolean"
+    },
+    "is_membership_free": {
+      "type": "boolean"
     }
   }
 }
