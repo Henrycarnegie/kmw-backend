@@ -27,23 +27,22 @@
     "issued_at": {
       "type": "datetime"
     },
-    "state": {
+    "status": {
       "type": "enumeration",
       "enum": [
-        "issued, revoked"
+        "issued",
+        "revoked"
       ]
     },
-    "users_permissions_user": {
+    "learner": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "certificates"
+      "target": "plugin::users-permissions.user"
     },
     "course": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::course.course",
-      "inversedBy": "certificates"
+      "target": "api::course.course"
     }
   }
 }
