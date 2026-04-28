@@ -583,6 +583,10 @@ export interface ApiCertificateCertificate extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     issued_at: Schema.Attribute.DateTime;
+    learner: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
     learner_name: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -591,14 +595,10 @@ export interface ApiCertificateCertificate extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    state: Schema.Attribute.Enumeration<['issued, revoked']>;
+    status: Schema.Attribute.Enumeration<['issued', 'revoked']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    users_permissions_user: Schema.Attribute.Relation<
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
   };
 }
 
@@ -621,7 +621,6 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    isFreeForMembers: Schema.Attribute.Boolean;
     description: Schema.Attribute.Text;
     enrollments: Schema.Attribute.Relation<
       'oneToMany',
@@ -630,6 +629,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     is_free: Schema.Attribute.Boolean;
     is_membership_free: Schema.Attribute.Boolean;
     is_published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    isFreeForMembers: Schema.Attribute.Boolean;
     language: Schema.Attribute.String & Schema.Attribute.DefaultTo<'en'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -641,7 +641,6 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     requiresMembership: Schema.Attribute.Boolean;
-    publishedAt: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
@@ -937,44 +936,6 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiSubscritionPlanSubscritionPlan
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'subscrition_plans';
-  info: {
-    displayName: 'subscription_plans';
-    pluralName: 'subscrition-plans';
-    singularName: 'subscrition-plan';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'MEMBER']> &
-      Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    discountPercentage: Schema.Attribute.Integer;
-    Duration: Schema.Attribute.Integer & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::subscrition-plan.subscrition-plan'
-    > &
-      Schema.Attribute.Private;
-    memberships: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::membership.membership'
-    >;
-    Name: Schema.Attribute.String & Schema.Attribute.Required;
-    Price: Schema.Attribute.Decimal & Schema.Attribute.Required;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiQuizQuiz extends Struct.CollectionTypeSchema {
   collectionName: 'quizzes';
   info: {
@@ -1117,6 +1078,44 @@ export interface ApiSubmissionSubmission extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSubscritionPlanSubscritionPlan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'subscrition_plans';
+  info: {
+    displayName: 'subscription_plans';
+    pluralName: 'subscrition-plans';
+    singularName: 'subscrition-plan';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'MEMBER']> &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discountPercentage: Schema.Attribute.Integer;
+    Duration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscrition-plan.subscrition-plan'
+    > &
+      Schema.Attribute.Private;
+    memberships: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membership.membership'
+    >;
+    Name: Schema.Attribute.String & Schema.Attribute.Required;
+    Price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiUnitProgressUnitProgress
   extends Struct.CollectionTypeSchema {
   collectionName: 'unit_progresses';
@@ -1223,10 +1222,10 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     meeting_url: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     recording_url: Schema.Attribute.String;
+    requiresMembership: Schema.Attribute.Boolean;
     scheduled_at: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-    requiresMembership: Schema.Attribute.Boolean;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1798,8 +1797,8 @@ declare module '@strapi/strapi' {
       'api::quiz.quiz': ApiQuizQuiz;
       'api::resource.resource': ApiResourceResource;
       'api::sel-project.sel-project': ApiSelProjectSelProject;
-      'api::subscrition-plan.subscrition-plan': ApiSubscritionPlanSubscritionPlan;
       'api::submission.submission': ApiSubmissionSubmission;
+      'api::subscrition-plan.subscrition-plan': ApiSubscritionPlanSubscritionPlan;
       'api::unit-progress.unit-progress': ApiUnitProgressUnitProgress;
       'api::webinar-registration.webinar-registration': ApiWebinarRegistrationWebinarRegistration;
       'api::webinar.webinar': ApiWebinarWebinar;
