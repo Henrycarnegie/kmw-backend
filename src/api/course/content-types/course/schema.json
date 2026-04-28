@@ -11,11 +11,17 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "isFree": {
+    "isFreeForMembers": {
       "type": "boolean"
     },
     "price": {
       "type": "decimal"
+    },
+    "memberDiscountPrice": {
+      "type": "decimal"
+    },
+    "requiresMembership": {
+      "type": "boolean"
     }
   }
 }

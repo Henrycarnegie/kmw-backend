@@ -577,15 +577,17 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    isFree: Schema.Attribute.Boolean;
+    isFreeForMembers: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course.course'
     > &
       Schema.Attribute.Private;
+    memberDiscountPrice: Schema.Attribute.Decimal;
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
+    requiresMembership: Schema.Attribute.Boolean;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -636,10 +638,12 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
   };
   attributes: {
     accessLevel: Schema.Attribute.Enumeration<['free_user', 'member']>;
+    approvedByAdmin: Schema.Attribute.Boolean;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     endDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    googleFormSubmitted: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -687,11 +691,15 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'api::payment.payment'
     > &
       Schema.Attribute.Private;
+    paymentDate: Schema.Attribute.DateTime;
+    paymentMethod: Schema.Attribute.Enumeration<
+      ['stripe', 'paypal', 'bank_transfer']
+    >;
     paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
       Schema.Attribute.DefaultTo<'pending'>;
     Provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    transactionId: Schema.Attribute.String;
+    transactionReference: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -751,6 +759,9 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    accessType: Schema.Attribute.Enumeration<
+      ['free', 'Members_only', 'paid', 'discounted_for_Members']
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -761,6 +772,7 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    requiresMembership: Schema.Attribute.Boolean;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

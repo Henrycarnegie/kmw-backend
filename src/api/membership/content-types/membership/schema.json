@@ -50,6 +50,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::payment.payment"
+    },
+    "googleFormSubmitted": {
+      "type": "boolean"
+    },
+    "approvedByAdmin": {
+      "type": "boolean"
     }
   }
 }

@@ -25,9 +25,6 @@
         "failed"
       ]
     },
-    "transactionId": {
-      "type": "string"
-    },
     "Provider": {
       "type": "string"
     },
@@ -36,6 +33,20 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "payments"
+    },
+    "paymentDate": {
+      "type": "datetime"
+    },
+    "paymentMethod": {
+      "type": "enumeration",
+      "enum": [
+        "stripe",
+        "paypal",
+        "bank_transfer"
+      ]
+    },
+    "transactionReference": {
+      "type": "string"
     }
   }
 }

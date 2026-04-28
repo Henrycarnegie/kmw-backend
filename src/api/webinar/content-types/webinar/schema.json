@@ -10,5 +10,18 @@
     "draftAndPublish": true
   },
   "pluginOptions": {},
-  "attributes": {}
+  "attributes": {
+    "requiresMembership": {
+      "type": "boolean"
+    },
+    "accessType": {
+      "type": "enumeration",
+      "enum": [
+        "free",
+        "Members_only",
+        "paid",
+        "discounted_for_Members"
+      ]
+    }
+  }
 }
