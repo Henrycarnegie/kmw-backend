@@ -43,6 +43,12 @@
       "relation": "oneToMany",
       "target": "api::unit-progress.unit-progress",
       "mappedBy": "enrollment"
+    },
+    "is_free": {
+      "type": "boolean"
+    },
+    "is_membership_free": {
+      "type": "boolean"
     }
   }
 }
