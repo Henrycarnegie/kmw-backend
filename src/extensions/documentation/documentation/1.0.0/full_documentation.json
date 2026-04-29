@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2026-04-28T10:16:57.923Z"
+    "x-generation-date": "2026-04-29T10:31:19.248Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -20944,6 +20944,12 @@
                         }
                       }
                     },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -26886,6 +26892,12 @@
                     }
                   }
                 },
+                "is_free": {
+                  "type": "boolean"
+                },
+                "is_membership_free": {
+                  "type": "boolean"
+                },
                 "createdAt": {
                   "type": "string",
                   "format": "date-time"
@@ -27154,6 +27166,12 @@
                   ],
                   "example": "string or id"
                 }
+              },
+              "is_free": {
+                "type": "boolean"
+              },
+              "is_membership_free": {
+                "type": "boolean"
               },
               "locale": {
                 "type": "string"
@@ -30682,6 +30700,12 @@
                         }
                       }
                     },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -31774,6 +31798,12 @@
                 }
               }
             }
+          },
+          "is_free": {
+            "type": "boolean"
+          },
+          "is_membership_free": {
+            "type": "boolean"
           },
           "createdAt": {
             "type": "string",
@@ -35432,6 +35462,12 @@
                               }
                             }
                           }
+                        },
+                        "is_free": {
+                          "type": "boolean"
+                        },
+                        "is_membership_free": {
+                          "type": "boolean"
                         },
                         "createdAt": {
                           "type": "string",
@@ -40124,6 +40160,12 @@
                           }
                         }
                       }
+                    },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
                     },
                     "createdAt": {
                       "type": "string",
@@ -46340,6 +46382,12 @@
                         }
                       }
                     },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -51076,6 +51124,12 @@
                                         }
                                       }
                                     }
+                                  },
+                                  "is_free": {
+                                    "type": "boolean"
+                                  },
+                                  "is_membership_free": {
+                                    "type": "boolean"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -56107,6 +56161,12 @@
                         }
                       }
                     },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -60626,6 +60686,12 @@
                                     }
                                   }
                                 }
+                              },
+                              "is_free": {
+                                "type": "boolean"
+                              },
+                              "is_membership_free": {
+                                "type": "boolean"
                               },
                               "createdAt": {
                                 "type": "string",
@@ -66817,6 +66883,12 @@
                         }
                       }
                     },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -71687,6 +71759,12 @@
                         }
                       }
                     },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -76052,6 +76130,12 @@
                                 }
                               }
                             }
+                          },
+                          "is_free": {
+                            "type": "boolean"
+                          },
+                          "is_membership_free": {
+                            "type": "boolean"
                           },
                           "createdAt": {
                             "type": "string",
@@ -82122,6 +82206,12 @@
                   }
                 }
               },
+              "is_free": {
+                "type": "boolean"
+              },
+              "is_membership_free": {
+                "type": "boolean"
+              },
               "createdAt": {
                 "type": "string",
                 "format": "date-time"
@@ -86122,6 +86212,12 @@
                                 }
                               }
                             }
+                          },
+                          "is_free": {
+                            "type": "boolean"
+                          },
+                          "is_membership_free": {
+                            "type": "boolean"
                           },
                           "createdAt": {
                             "type": "string",
@@ -90821,6 +90917,12 @@
                           }
                         }
                       }
+                    },
+                    "is_free": {
+                      "type": "boolean"
+                    },
+                    "is_membership_free": {
+                      "type": "boolean"
                     },
                     "createdAt": {
                       "type": "string",
