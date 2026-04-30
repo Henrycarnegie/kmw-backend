@@ -666,6 +666,8 @@ export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     enrolled_at: Schema.Attribute.DateTime;
+    is_free: Schema.Attribute.Boolean;
+    is_membership_free: Schema.Attribute.Boolean;
     last_activity: Schema.Attribute.DateTime;
     last_quiz_score: Schema.Attribute.Decimal;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
