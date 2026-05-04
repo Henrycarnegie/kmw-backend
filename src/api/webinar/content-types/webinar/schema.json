@@ -71,6 +71,12 @@
     },
     "instructor_information": {
       "type": "text"
+    },
+    "duration_in_minutes": {
+      "type": "integer"
+    },
+    "related_links": {
+      "type": "string"
     }
   }
 }

@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2026-05-04T02:26:37.078Z"
+    "x-generation-date": "2026-05-04T03:58:48.622Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -21358,6 +21358,12 @@
                         "instructor_information": {
                           "type": "string"
                         },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -25057,6 +25063,12 @@
                                 "type": "boolean"
                               },
                               "instructor_information": {
+                                "type": "string"
+                              },
+                              "duration_in_minutes": {
+                                "type": "integer"
+                              },
+                              "related_links": {
                                 "type": "string"
                               },
                               "createdAt": {
@@ -31132,6 +31144,12 @@
                         "instructor_information": {
                           "type": "string"
                         },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -35901,6 +35919,12 @@
                             "instructor_information": {
                               "type": "string"
                             },
+                            "duration_in_minutes": {
+                              "type": "integer"
+                            },
+                            "related_links": {
+                              "type": "string"
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -40603,6 +40627,12 @@
                           "type": "boolean"
                         },
                         "instructor_information": {
+                          "type": "string"
+                        },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
                           "type": "string"
                         },
                         "createdAt": {
@@ -46832,6 +46862,12 @@
                         "instructor_information": {
                           "type": "string"
                         },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -51579,6 +51615,12 @@
                                         "type": "boolean"
                                       },
                                       "instructor_information": {
+                                        "type": "string"
+                                      },
+                                      "duration_in_minutes": {
+                                        "type": "integer"
+                                      },
+                                      "related_links": {
                                         "type": "string"
                                       },
                                       "createdAt": {
@@ -56623,6 +56665,12 @@
                         "instructor_information": {
                           "type": "string"
                         },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -61153,6 +61201,12 @@
                                     "type": "boolean"
                                   },
                                   "instructor_information": {
+                                    "type": "string"
+                                  },
+                                  "duration_in_minutes": {
+                                    "type": "integer"
+                                  },
+                                  "related_links": {
                                     "type": "string"
                                   },
                                   "createdAt": {
@@ -67357,6 +67411,12 @@
                         "instructor_information": {
                           "type": "string"
                         },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -72239,6 +72299,12 @@
                         "instructor_information": {
                           "type": "string"
                         },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -76617,6 +76683,12 @@
                               "instructor_information": {
                                 "type": "string"
                               },
+                              "duration_in_minutes": {
+                                "type": "integer"
+                              },
+                              "related_links": {
+                                "type": "string"
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -80442,6 +80514,12 @@
                             "instructor_information": {
                               "type": "string"
                             },
+                            "duration_in_minutes": {
+                              "type": "integer"
+                            },
+                            "related_links": {
+                              "type": "string"
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -82551,6 +82629,12 @@
                 "type": "boolean"
               },
               "instructor_information": {
+                "type": "string"
+              },
+              "duration_in_minutes": {
+                "type": "integer"
+              },
+              "related_links": {
                 "type": "string"
               },
               "locale": {
@@ -87181,6 +87265,12 @@
                     "instructor_information": {
                       "type": "string"
                     },
+                    "duration_in_minutes": {
+                      "type": "integer"
+                    },
+                    "related_links": {
+                      "type": "string"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -87346,6 +87436,12 @@
             "type": "boolean"
           },
           "instructor_information": {
+            "type": "string"
+          },
+          "duration_in_minutes": {
+            "type": "integer"
+          },
+          "related_links": {
             "type": "string"
           },
           "createdAt": {
@@ -91426,6 +91522,12 @@
                           "type": "boolean"
                         },
                         "instructor_information": {
+                          "type": "string"
+                        },
+                        "duration_in_minutes": {
+                          "type": "integer"
+                        },
+                        "related_links": {
                           "type": "string"
                         },
                         "createdAt": {
