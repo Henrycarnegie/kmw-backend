@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2026-04-29T10:31:19.248Z"
+    "x-generation-date": "2026-05-04T02:26:37.078Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -19992,6 +19992,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -21352,6 +21355,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -22200,6 +22206,9 @@
               },
               "is_membership_free": {
                 "type": "boolean"
+              },
+              "instructor_information": {
+                "type": "string"
               },
               "locale": {
                 "type": "string"
@@ -25047,6 +25056,9 @@
                               "is_membership_free": {
                                 "type": "boolean"
                               },
+                              "instructor_information": {
+                                "type": "string"
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -26609,6 +26621,9 @@
                               "is_membership_free": {
                                 "type": "boolean"
                               },
+                              "instructor_information": {
+                                "type": "string"
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -27017,6 +27032,9 @@
           },
           "is_membership_free": {
             "type": "boolean"
+          },
+          "instructor_information": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -29748,6 +29766,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -31107,6 +31128,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",
@@ -34511,6 +34535,9 @@
                             "is_membership_free": {
                               "type": "boolean"
                             },
+                            "instructor_information": {
+                              "type": "string"
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -35870,6 +35897,9 @@
                             },
                             "is_membership_free": {
                               "type": "boolean"
+                            },
+                            "instructor_information": {
+                              "type": "string"
                             },
                             "createdAt": {
                               "type": "string",
@@ -39209,6 +39239,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -40568,6 +40601,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",
@@ -45430,6 +45466,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -46789,6 +46828,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",
@@ -50909,6 +50951,9 @@
                                       "is_membership_free": {
                                         "type": "boolean"
                                       },
+                                      "instructor_information": {
+                                        "type": "string"
+                                      },
                                       "createdAt": {
                                         "type": "string",
                                         "format": "date-time"
@@ -51532,6 +51577,9 @@
                                       },
                                       "is_membership_free": {
                                         "type": "boolean"
+                                      },
+                                      "instructor_information": {
+                                        "type": "string"
                                       },
                                       "createdAt": {
                                         "type": "string",
@@ -55209,6 +55257,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -56568,6 +56619,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",
@@ -60471,6 +60525,9 @@
                                   "is_membership_free": {
                                     "type": "boolean"
                                   },
+                                  "instructor_information": {
+                                    "type": "string"
+                                  },
                                   "createdAt": {
                                     "type": "string",
                                     "format": "date-time"
@@ -61094,6 +61151,9 @@
                                   },
                                   "is_membership_free": {
                                     "type": "boolean"
+                                  },
+                                  "instructor_information": {
+                                    "type": "string"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -65931,6 +65991,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -67290,6 +67353,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",
@@ -70807,6 +70873,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -72166,6 +72235,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",
@@ -75179,6 +75251,9 @@
                               "is_membership_free": {
                                 "type": "boolean"
                               },
+                              "instructor_information": {
+                                "type": "string"
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -76538,6 +76613,9 @@
                               },
                               "is_membership_free": {
                                 "type": "boolean"
+                              },
+                              "instructor_information": {
+                                "type": "string"
                               },
                               "createdAt": {
                                 "type": "string",
@@ -80361,6 +80439,9 @@
                             "is_membership_free": {
                               "type": "boolean"
                             },
+                            "instructor_information": {
+                              "type": "string"
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -81923,6 +82004,9 @@
                             "is_membership_free": {
                               "type": "boolean"
                             },
+                            "instructor_information": {
+                              "type": "string"
+                            },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time"
@@ -82465,6 +82549,9 @@
               },
               "is_membership_free": {
                 "type": "boolean"
+              },
+              "instructor_information": {
+                "type": "string"
               },
               "locale": {
                 "type": "string"
@@ -85261,6 +85348,9 @@
                               "is_membership_free": {
                                 "type": "boolean"
                               },
+                              "instructor_information": {
+                                "type": "string"
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -87088,6 +87178,9 @@
                     "is_membership_free": {
                       "type": "boolean"
                     },
+                    "instructor_information": {
+                      "type": "string"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -87251,6 +87344,9 @@
           },
           "is_membership_free": {
             "type": "boolean"
+          },
+          "instructor_information": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -89966,6 +90062,9 @@
                         "is_membership_free": {
                           "type": "boolean"
                         },
+                        "instructor_information": {
+                          "type": "string"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time"
@@ -91325,6 +91424,9 @@
                         },
                         "is_membership_free": {
                           "type": "boolean"
+                        },
+                        "instructor_information": {
+                          "type": "string"
                         },
                         "createdAt": {
                           "type": "string",

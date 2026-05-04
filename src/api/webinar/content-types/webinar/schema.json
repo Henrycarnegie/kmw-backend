@@ -68,6 +68,9 @@
     },
     "is_membership_free": {
       "type": "boolean"
+    },
+    "instructor_information": {
+      "type": "text"
     }
   }
 }
