@@ -626,6 +626,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::enrollment.enrollment'
     >;
+    instructor_information: Schema.Attribute.Text;
     is_free: Schema.Attribute.Boolean;
     is_membership_free: Schema.Attribute.Boolean;
     is_published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1212,6 +1213,7 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
+    instructor_information: Schema.Attribute.Text;
     is_free: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     is_membership_free: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
