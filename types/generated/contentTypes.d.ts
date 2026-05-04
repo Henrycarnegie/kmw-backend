@@ -1213,6 +1213,7 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
+    duration_in_minutes: Schema.Attribute.Integer;
     instructor_information: Schema.Attribute.Text;
     is_free: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     is_membership_free: Schema.Attribute.Boolean;
@@ -1226,6 +1227,7 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     meeting_url: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     recording_url: Schema.Attribute.String;
+    related_links: Schema.Attribute.String;
     requiresMembership: Schema.Attribute.Boolean;
     scheduled_at: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
