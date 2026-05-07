@@ -627,10 +627,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'api::enrollment.enrollment'
     >;
     instructor_information: Schema.Attribute.Text;
-    is_free: Schema.Attribute.Boolean;
-    is_membership_free: Schema.Attribute.Boolean;
     is_published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    isFreeForMembers: Schema.Attribute.Boolean;
     language: Schema.Attribute.String & Schema.Attribute.DefaultTo<'en'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -638,11 +635,12 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'api::course.course'
     > &
       Schema.Attribute.Private;
-    memberDiscountPrice: Schema.Attribute.Decimal;
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
-    requiresMembership: Schema.Attribute.Boolean;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    tier: Schema.Attribute.Enumeration<['free', 'lowcost', 'premium']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'free'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -798,6 +796,55 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiMembershipApplicationMembershipApplication
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'membership_applications';
+  info: {
+    displayName: 'Membership Application';
+    pluralName: 'membership-applications';
+    singularName: 'membership-application';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    address: Schema.Attribute.Text;
+    bankTransferInfo: Schema.Attribute.String;
+    birthday: Schema.Attribute.Date;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    fullName: Schema.Attribute.String;
+    gender: Schema.Attribute.String;
+    googleFormResponseId: Schema.Attribute.String;
+    idNumber: Schema.Attribute.String;
+    isUniversityStudent: Schema.Attribute.String;
+    lineId: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membership-application.membership-application'
+    > &
+      Schema.Attribute.Private;
+    phone: Schema.Attribute.String;
+    positionTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    questionsNeeds: Schema.Attribute.Text;
+    rawAnswers: Schema.Attribute.JSON;
+    submittedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
   collectionName: 'memberships';
   info: {
@@ -809,32 +856,33 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    accessLevel: Schema.Attribute.Enumeration<['free_user', 'member']>;
+    accessLevel: Schema.Attribute.Enumeration<['free_user', 'low', 'premium']>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     endDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    googleFormSubmitted: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::membership.membership'
     > &
       Schema.Attribute.Private;
-    membershipStatus: Schema.Attribute.Enumeration<
-      [
-        'pending_form',
-        'pending_payment',
-        'pending_approval',
-        'active',
-        'rejected',
-        'expired',
-      ]
-    >;
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
     StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    stripeCustomerId: Schema.Attribute.String;
+    stripeSubscriptionId: Schema.Attribute.String;
     subscriptionStatus: Schema.Attribute.Enumeration<
-      ['pending_payment', 'active', 'inactive', 'expired']
+      [
+        'pending_payment',
+        'active',
+        'past_due',
+        'cancelled',
+        'expired',
+        'inactive',
+      ]
     >;
     subscrition_plans: Schema.Attribute.Relation<
       'oneToMany',
@@ -911,6 +959,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
   };
   attributes: {
     Amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -920,6 +969,10 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'api::payment.payment'
     > &
       Schema.Attribute.Private;
+    membership: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::membership.membership'
+    >;
     paymentDate: Schema.Attribute.DateTime;
     paymentMethod: Schema.Attribute.Enumeration<
       ['stripe', 'paypal', 'bank_transfer']
@@ -928,6 +981,12 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       Schema.Attribute.DefaultTo<'pending'>;
     Provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    purchaseType: Schema.Attribute.Enumeration<
+      ['membership', 'renewal', 'course', 'webinar']
+    >;
+    stripeEventId: Schema.Attribute.String;
+    stripeInvoiceId: Schema.Attribute.String;
+    stripeSessionId: Schema.Attribute.String;
     transactionReference: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -936,6 +995,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    webinar: Schema.Attribute.Relation<'manyToOne', 'api::webinar.webinar'>;
   };
 }
 
@@ -1093,8 +1153,9 @@ export interface ApiSubscritionPlanSubscritionPlan
     draftAndPublish: true;
   };
   attributes: {
-    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'MEMBER']> &
+    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'LOW', 'PREMIUM']> &
       Schema.Attribute.Required;
+    active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1113,6 +1174,8 @@ export interface ApiSubscritionPlanSubscritionPlan
     Name: Schema.Attribute.String & Schema.Attribute.Required;
     Price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    stripePriceId: Schema.Attribute.String;
+    stripeRenewalCouponId: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1186,7 +1249,9 @@ export interface ApiWebinarRegistrationWebinarRegistration
     promoted_at: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
     registered_at: Schema.Attribute.DateTime;
-    state: Schema.Attribute.Enumeration<['confirmed, waitlisted, cancelled']>;
+    state: Schema.Attribute.Enumeration<
+      ['confirmed', 'waitlisted', 'cancelled']
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1206,17 +1271,12 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    accessType: Schema.Attribute.Enumeration<
-      ['free', 'Members_only', 'paid', 'discounted_for_Members']
-    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text;
     duration_in_minutes: Schema.Attribute.Integer;
     instructor_information: Schema.Attribute.Text;
-    is_free: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    is_membership_free: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1225,12 +1285,15 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     max_capacity: Schema.Attribute.Integer;
     meeting_url: Schema.Attribute.String;
+    price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     recording_url: Schema.Attribute.String;
     related_links: Schema.Attribute.String;
-    requiresMembership: Schema.Attribute.Boolean;
     scheduled_at: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    tier: Schema.Attribute.Enumeration<['free', 'lowcost', 'premium']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'free'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1797,6 +1860,7 @@ declare module '@strapi/strapi' {
       'api::forum-reply.forum-reply': ApiForumReplyForumReply;
       'api::forum-thread.forum-thread': ApiForumThreadForumThread;
       'api::global.global': ApiGlobalGlobal;
+      'api::membership-application.membership-application': ApiMembershipApplicationMembershipApplication;
       'api::membership.membership': ApiMembershipMembership;
       'api::module.module': ApiModuleModule;
       'api::payment.payment': ApiPaymentPayment;

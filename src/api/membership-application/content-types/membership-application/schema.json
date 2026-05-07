@@ -1,0 +1,67 @@
+{
+  "kind": "collectionType",
+  "collectionName": "membership_applications",
+  "info": {
+    "singularName": "membership-application",
+    "pluralName": "membership-applications",
+    "displayName": "Membership Application"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "fullName": {
+      "type": "string"
+    },
+    "birthday": {
+      "type": "date"
+    },
+    "idNumber": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "string"
+    },
+    "positionTitle": {
+      "type": "string"
+    },
+    "isUniversityStudent": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "lineId": {
+      "type": "string"
+    },
+    "bankTransferInfo": {
+      "type": "string"
+    },
+    "questionsNeeds": {
+      "type": "text"
+    },
+    "googleFormResponseId": {
+      "type": "string"
+    },
+    "submittedAt": {
+      "type": "datetime"
+    },
+    "rawAnswers": {
+      "type": "json"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

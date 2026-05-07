@@ -22,8 +22,18 @@
       "enum": [
         "pending_payment",
         "active",
-        "inactive",
-        "expired"
+        "past_due",
+        "cancelled",
+        "expired",
+        "inactive"
+      ]
+    },
+    "accessLevel": {
+      "type": "enumeration",
+      "enum": [
+        "free_user",
+        "low",
+        "premium"
       ]
     },
     "StartDate": {
@@ -34,12 +44,15 @@
       "type": "datetime",
       "required": true
     },
-    "accessLevel": {
-      "type": "enumeration",
-      "enum": [
-        "free_user",
-        "member"
-      ]
+    "stripeSubscriptionId": {
+      "type": "string"
+    },
+    "stripeCustomerId": {
+      "type": "string"
+    },
+    "googleFormSubmitted": {
+      "type": "boolean",
+      "default": false
     },
     "subscrition_plans": {
       "type": "relation",
@@ -50,17 +63,6 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::payment.payment"
-    },
-    "membershipStatus": {
-      "type": "enumeration",
-      "enum": [
-        "pending_form",
-        "pending_payment",
-        "pending_approval",
-        "active",
-        "rejected",
-        "expired"
-      ]
     }
   }
 }

@@ -11,14 +11,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Price": {
-      "type": "decimal",
-      "required": true
-    },
-    "Duration": {
-      "type": "integer",
-      "required": true
-    },
     "Name": {
       "type": "string",
       "required": true
@@ -28,11 +20,30 @@
       "required": true,
       "enum": [
         "FREE_USER",
-        "MEMBER"
+        "LOW",
+        "PREMIUM"
       ]
+    },
+    "Price": {
+      "type": "decimal",
+      "required": true
+    },
+    "Duration": {
+      "type": "integer",
+      "required": true
     },
     "discountPercentage": {
       "type": "integer"
+    },
+    "stripePriceId": {
+      "type": "string"
+    },
+    "stripeRenewalCouponId": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
     },
     "memberships": {
       "type": "relation",

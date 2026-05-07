@@ -27,9 +27,18 @@
     "meeting_url": {
       "type": "string"
     },
-    "is_free": {
-      "type": "boolean",
-      "default": false
+    "tier": {
+      "type": "enumeration",
+      "required": true,
+      "default": "free",
+      "enum": [
+        "free",
+        "lowcost",
+        "premium"
+      ]
+    },
+    "price": {
+      "type": "decimal"
     },
     "max_capacity": {
       "type": "integer"
@@ -48,27 +57,6 @@
         "audios"
       ]
     },
-    "webinar_registrations": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::webinar-registration.webinar-registration",
-      "mappedBy": "webinar"
-    },
-    "requiresMembership": {
-      "type": "boolean"
-    },
-    "accessType": {
-      "type": "enumeration",
-      "enum": [
-        "free",
-        "Members_only",
-        "paid",
-        "discounted_for_Members"
-      ]
-    },
-    "is_membership_free": {
-      "type": "boolean"
-    },
     "instructor_information": {
       "type": "text"
     },
@@ -77,6 +65,12 @@
     },
     "related_links": {
       "type": "string"
+    },
+    "webinar_registrations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::webinar-registration.webinar-registration",
+      "mappedBy": "webinar"
     }
   }
 }

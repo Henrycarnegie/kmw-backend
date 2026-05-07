@@ -14,7 +14,9 @@
     "state": {
       "type": "enumeration",
       "enum": [
-        "confirmed, waitlisted, cancelled"
+        "confirmed",
+        "waitlisted",
+        "cancelled"
       ]
     },
     "waitlist_position": {
