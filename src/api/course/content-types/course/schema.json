@@ -11,25 +11,12 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "isFreeForMembers": {
-      "type": "boolean"
-    },
-    "price": {
-      "type": "decimal"
-    },
-    "memberDiscountPrice": {
-      "type": "decimal"
-    },
-    "requiresMembership": {
-      "type": "boolean"
-    },
     "title": {
       "type": "string",
       "required": true
     },
     "description": {
-      "type": "text",
-      "required": false
+      "type": "text"
     },
     "language": {
       "type": "string",
@@ -38,6 +25,19 @@
     "is_published": {
       "type": "boolean",
       "default": false
+    },
+    "tier": {
+      "type": "enumeration",
+      "required": true,
+      "default": "free",
+      "enum": [
+        "free",
+        "lowcost",
+        "premium"
+      ]
+    },
+    "price": {
+      "type": "decimal"
     },
     "thumbnail": {
       "type": "media",
@@ -48,6 +48,9 @@
         "videos",
         "audios"
       ]
+    },
+    "instructor_information": {
+      "type": "text"
     },
     "enrollments": {
       "type": "relation",
@@ -65,15 +68,6 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::article.article"
-    },
-    "is_free": {
-      "type": "boolean"
-    },
-    "is_membership_free": {
-      "type": "boolean"
-    },
-    "instructor_information": {
-      "type": "text"
     }
   }
 }

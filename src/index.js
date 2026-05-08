@@ -78,6 +78,53 @@ module.exports = {
       }
 
       console.log('Membership permissions enabled successfully');
+
+      // Phase 2: Public role for Stripe webhook + Google Form intake
+      const publicRole = await strapi
+        .query('plugin::users-permissions.role')
+        .findOne({ where: { type: 'public' } });
+      if (publicRole) {
+        const publicActions = [
+          'api::payment.payment.handleWebhook',
+          'api::membership-application.membership-application.intake',
+        ];
+        for (const action of publicActions) {
+          const existing = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({ where: { action, role: publicRole.id } });
+          if (!existing) {
+            await strapi
+              .query('plugin::users-permissions.permission')
+              .create({ data: { action, role: publicRole.id } });
+          }
+        }
+        console.log('Public Stripe + form intake permissions enabled');
+      }
+
+      // Phase 2: Authenticated role for checkout/portal/me endpoints
+      const authRole = await strapi
+        .query('plugin::users-permissions.role')
+        .findOne({ where: { type: 'authenticated' } });
+      if (authRole) {
+        const authActions = [
+          'api::payment.payment.createMembershipCheckout',
+          'api::payment.payment.createCourseCheckout',
+          'api::payment.payment.createWebinarCheckout',
+          'api::payment.payment.createBillingPortal',
+          'api::membership-application.membership-application.me',
+        ];
+        for (const action of authActions) {
+          const existing = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({ where: { action, role: authRole.id } });
+          if (!existing) {
+            await strapi
+              .query('plugin::users-permissions.permission')
+              .create({ data: { action, role: authRole.id } });
+          }
+        }
+        console.log('Authenticated checkout permissions enabled');
+      }
     } catch (error) {
       console.error('Error creating Membership role:', error);
     }
