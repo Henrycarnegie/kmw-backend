@@ -627,8 +627,6 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'api::enrollment.enrollment'
     >;
     instructor_information: Schema.Attribute.Text;
-    is_free: Schema.Attribute.Boolean;
-    is_membership_free: Schema.Attribute.Boolean;
     is_published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     language: Schema.Attribute.String & Schema.Attribute.DefaultTo<'en'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1279,8 +1277,6 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     description: Schema.Attribute.Text;
     duration_in_minutes: Schema.Attribute.Integer;
     instructor_information: Schema.Attribute.Text;
-    is_free: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    is_membership_free: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1293,7 +1289,6 @@ export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     recording_url: Schema.Attribute.String;
     related_links: Schema.Attribute.String;
-    requiresMembership: Schema.Attribute.Boolean;
     scheduled_at: Schema.Attribute.DateTime;
     thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     tier: Schema.Attribute.Enumeration<['free', 'lowcost', 'premium']> &
