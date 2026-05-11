@@ -2,6 +2,8 @@
 
 Complete reference for the frontend team. Covers authentication, membership signup, course/webinar purchases, billing management, and access control.
 
+> **Single source of truth.** This document supersedes the three split guides (`MEMBERSHIP_API_FRONTEND_GUIDE.md`, `COURSE_PURCHASE_FRONTEND_GUIDE.md`, `WEBINAR_PURCHASE_FRONTEND_GUIDE.md`). Those remain in this folder as focused-flow references, but everything is here.
+
 ---
 
 ## Table of contents
