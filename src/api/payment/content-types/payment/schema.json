@@ -70,6 +70,9 @@
     "donorMessage": {
       "type": "text"
     },
+    "membershipApplicationData": {
+      "type": "json"
+    },
     "users_permissions_user": {
       "type": "relation",
       "relation": "manyToOne",
