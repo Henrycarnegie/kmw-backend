@@ -680,7 +680,7 @@ Initiate a hosted membership checkout.
 
 Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected subscription duration.
 
-This endpoint can save the membership application form and create checkout in one request. Use this for the "continue to payment" button after the form. If the application form has already been saved, sending only `subscriptionId` and `paymentProvider` still works.
+This endpoint carries the membership application form through checkout. Use this for the "continue to payment" button after the form. The application form is saved to the membership application form collection only after the payment provider confirms payment. If the application form has already been saved, sending only `subscriptionId` and `paymentProvider` still works.
 
 **Errors** (most common):
 | Status | Message | What happened |
@@ -882,27 +882,23 @@ The full happy path from first visit to active member to course access:
    POST /api/auth/local/register  ───────────► JWT
         │
         ▼
-   Show website membership application form
-        │
-        ▼ (user fills, submits)
-   POST /api/membership-applications
+   GET /api/subscriptions?filters[active][$eq]=true
         │
         ▼
-   GET /api/membership-applications/me
+   Show website membership application form + subscription picker
         │
-        ▼ (200 once application lands)
-   Show subscription picker:
-     GET /api/subscriptions?filters[active][$eq]=true
-        │
-        ▼ (user picks subscription)
-   POST /api/payments/checkout/membership { subscriptionId }
+        ▼ (user fills form and picks subscription)
+   POST /api/payments/checkout/membership { form fields, subscriptionId, paymentProvider }
         │
         ▼ (200 returns url)
    window.location.href = url  ─────────────► hosted checkout
-                                                  │
-                                                  ▼ (user pays with 4242...)
-                                            Stripe redirects to:
-                                            ${CLIENT_URL}/membership/success
+        │
+        ▼ (user pays)
+   Provider redirects to:
+   ${CLIENT_URL}/membership/success
+        │
+        ▼
+   Backend confirms payment, saves application form, activates membership
         │
         ▼
    Success page polls GET /api/users/me?populate=memberships
@@ -938,16 +934,10 @@ NOT_LOGGED_IN
     │ (login/register)
     ▼
 LOGGED_IN_NO_APPLICATION
-    │ (submit website application form)
-    │ ─── POST /membership-applications
+    │ (load subscriptions, fill website application form)
+    │ ─── POST /checkout/membership with form fields
     │
-    │ ─── 200 (application saved) ───────────┐
-    │                                         ▼
-    │                                READY_TO_PAY
-    │                                         │ (user picks subscription, clicks buy)
-    │                                         ▼
-    │                                  POST /checkout/membership
-    │                                         │ (200, redirect)
+    │ ─── 200 (checkout url returned) ───────┐
     │                                         ▼
     │                                  PAYING (hosted checkout)
     │                                         │ (user pays)
@@ -1023,7 +1013,7 @@ The backend team must have these running:
 Without #2, Stripe payments succeed on Stripe's side but the membership/enrollment row is never created — the success page would poll forever. PayPal and LINE Pay use their callback routes instead.
 
 ### Test the website application form
-Submit `POST /api/membership-applications` with a logged-in user's JWT, then call `GET /api/membership-applications/me` to confirm the saved application before checkout.
+Submit the full form payload to `POST /api/payments/checkout/membership`, complete sandbox payment, then call `GET /api/membership-applications/me` to confirm the application form was saved after payment.
 
 ---
 

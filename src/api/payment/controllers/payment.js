@@ -66,7 +66,7 @@ function hasMembershipApplicationPayload(body) {
 }
 
 async function upsertMembershipApplication(strapi, user, body, selectedPlanId) {
-  const email = (user.email || '').toLowerCase().trim();
+  const email = String(user.email || '').toLowerCase().trim();
   if (!email) throw new Error('User email required');
 
   const data = {
@@ -87,6 +87,17 @@ async function upsertMembershipApplication(strapi, user, body, selectedPlanId) {
   }
 
   return strapi.entityService.create('api::membership-application.membership-application', { data });
+}
+
+async function saveMembershipApplicationForPaidPayment(strapi, payment) {
+  if (payment.purchaseType !== 'membership' || !payment.membershipApplicationData) return null;
+
+  const user = payment.users_permissions_user;
+  const userId = user?.id || user;
+  const email = (user?.email || payment.membershipApplicationData.email || '').toLowerCase().trim();
+  if (!userId || !email) return null;
+
+  return upsertMembershipApplication(strapi, { id: userId, email }, payment.membershipApplicationData, payment.membershipApplicationData.planId);
 }
 
 function getMembershipDates(durationDays) {
@@ -266,6 +277,7 @@ async function createPendingExternalPayment(strapi, provider, reference, data) {
       donorName: data.donorName || undefined,
       donorEmail: data.donorEmail || undefined,
       donorMessage: data.donorMessage || undefined,
+      membershipApplicationData: data.membershipApplicationData || undefined,
       publishedAt: new Date(),
     },
   });
@@ -358,6 +370,7 @@ async function grantPurchasedAccess(strapi, payment) {
 
 async function markExternalPaymentPaid(strapi, payment) {
   if (payment.paymentStatus === 'paid') return payment;
+  await saveMembershipApplicationForPaidPayment(strapi, payment);
   await grantPurchasedAccess(strapi, payment);
   return strapi.entityService.update('api::payment.payment', payment.id, {
     data: {
@@ -463,17 +476,15 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     if (!isSupportedPaymentProvider(provider)) return ctx.badRequest('Unsupported payment provider');
     if (!selectedPlanId) return ctx.badRequest('subscriptionId required');
 
-    let application = await getApplicationByEmail(strapi, user.email);
-    if (hasMembershipApplicationPayload(ctx.request.body || {})) {
-      try {
-        application = await upsertMembershipApplication(strapi, user, ctx.request.body || {}, selectedPlanId);
-      } catch (err) {
-        strapi.log.error('Membership application form save error:', err);
-        return ctx.internalServerError(err.message);
+    const application = await getApplicationByEmail(strapi, user.email);
+    const membershipApplicationData = hasMembershipApplicationPayload(ctx.request.body || {})
+      ? {
+        ...normalizeMembershipApplicationPayload(ctx.request.body || {}, selectedPlanId),
+        email: user.email,
       }
-    }
+      : null;
 
-    if (!application) {
+    if (!application && !membershipApplicationData) {
       return ctx.badRequest('Please complete the membership application form before purchasing');
     }
 
@@ -492,6 +503,7 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
           purchaseType: 'membership',
           userId: user.id,
           membershipPlan: plan,
+          membershipApplicationData,
           cancelPath: '/membership/cancel',
         });
         return;
@@ -517,6 +529,19 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
         },
         subscription_data: {
           metadata: { userId: String(user.id), planId: String(plan.id) },
+        },
+      });
+      await strapi.entityService.create('api::payment.payment', {
+        data: {
+          Amount: Number(plan.Price),
+          paymentStatus: 'pending',
+          Provider: PAYMENT_PROVIDER.STRIPE,
+          paymentMethod: PAYMENT_PROVIDER.STRIPE,
+          purchaseType: 'membership',
+          stripeSessionId: session.id,
+          users_permissions_user: user.id,
+          membershipApplicationData: membershipApplicationData || undefined,
+          publishedAt: new Date(),
         },
       });
       ctx.body = { url: session.url, id: session.id, provider: PAYMENT_PROVIDER.STRIPE };
@@ -889,6 +914,31 @@ async function handleSubscriptionCheckout(strapi, session, eventId) {
       publishedAt: new Date(),
     },
   });
+
+  const pendingPayments = await strapi.entityService.findMany('api::payment.payment', {
+    filters: {
+      Provider: PAYMENT_PROVIDER.STRIPE,
+      stripeSessionId: session.id,
+      purchaseType: 'membership',
+    },
+    populate: ['users_permissions_user', 'membership'],
+    limit: 1,
+  });
+  const pendingPayment = pendingPayments && pendingPayments[0];
+
+  if (pendingPayment) {
+    await saveMembershipApplicationForPaidPayment(strapi, pendingPayment);
+    await strapi.entityService.update('api::payment.payment', pendingPayment.id, {
+      data: {
+        Amount: (session.amount_total || 0) / 100,
+        paymentStatus: 'paid',
+        paymentDate: new Date(),
+        stripeEventId: eventId,
+        membership: membership.id,
+      },
+    });
+    return;
+  }
 
   await strapi.entityService.create('api::payment.payment', {
     data: {

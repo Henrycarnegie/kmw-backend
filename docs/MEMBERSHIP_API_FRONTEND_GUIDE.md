@@ -41,7 +41,7 @@ The JWT comes from `/api/auth/local` or `/api/auth/local/register`. Save it in `
 
 ## 3. The Website Application Form
 
-After registration or login, show the membership application form on the website. Submit it directly to `POST /api/membership-applications` with the user's JWT. The backend uses the logged-in user's account email automatically.
+After registration or login, show the membership application form on the website. For the normal "continue to payment" flow, send the form fields directly to `POST /api/payments/checkout/membership`; the backend saves the application form only after payment is confirmed.
 
 ---
 
@@ -187,7 +187,7 @@ Log in an existing user.
 
 Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected subscription duration.
 
-The checkout endpoint can also save the membership application form. If the button after the form should go straight to payment, send the form fields with this request and redirect to the returned `url`. If the form was already saved with `POST /api/membership-applications`, you may send only `subscriptionId` and `paymentProvider`.
+The checkout endpoint carries the membership application form through payment. If the button after the form should go straight to payment, send the form fields with this request and redirect to the returned `url`. The application form is written to the membership application form collection only after Stripe, PayPal, or LINE Pay confirms payment. If the form was already saved with `POST /api/membership-applications`, you may send only `subscriptionId` and `paymentProvider`.
 
 **Common errors**
 | Status | Body message | Fix |
@@ -306,7 +306,7 @@ Any future expiry (`12/34`), any 3-digit CVC (`123`), any postal code.
 ## 7. Verification checklist — the five things proven working
 
 ### ✅ 1. Website membership application form
-Frontend submits `POST /api/membership-applications`, then verifies it with `GET /api/membership-applications/me` → 200.
+Frontend submits the form fields to `POST /api/payments/checkout/membership`, completes payment, then verifies it with `GET /api/membership-applications/me` → 200.
 
 ### ✅ 2. Form-gated checkout
 - Without application → 400 `Please complete the membership application form before purchasing`

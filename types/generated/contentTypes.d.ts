@@ -975,6 +975,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'manyToOne',
       'api::membership.membership'
     >;
+    membershipApplicationData: Schema.Attribute.JSON;
     paymentDate: Schema.Attribute.DateTime;
     paymentMethod: Schema.Attribute.Enumeration<
       ['stripe', 'paypal', 'line_pay', 'bank_transfer']

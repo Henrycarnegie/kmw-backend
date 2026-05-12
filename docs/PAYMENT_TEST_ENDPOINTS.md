@@ -30,7 +30,7 @@ Use the returned JWT for membership and course checkout:
 
 ## 2. Submit Membership Application Form
 
-Membership payment requires the user to have submitted the website application form.
+This endpoint saves the form immediately. For the normal "continue to payment" button, skip this step and send the form fields directly to membership checkout in step 5; the backend saves the application form after payment is confirmed.
 
 ### `POST /api/membership-applications`
 
