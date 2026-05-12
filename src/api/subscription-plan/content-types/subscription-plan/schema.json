@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "subscription_plans",
+  "info": {
+    "singularName": "subscription-plan",
+    "pluralName": "subscription-plans",
+    "displayName": "Subscription Plan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "accessLevel": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["free_user", "low", "premium"]
+    },
+    "price": {
+      "type": "decimal",
+      "required": true
+    },
+    "duration": {
+      "type": "integer",
+      "required": true
+    },
+    "discountPercentage": {
+      "type": "integer"
+    },
+    "stripePriceId": {
+      "type": "string"
+    },
+    "stripeRenewalCouponId": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "memberships": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::membership.membership",
+      "mappedBy": "subscription_plan"
+    }
+  }
+}

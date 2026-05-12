@@ -85,7 +85,7 @@ No JSON body.
 
 ## 4. List Membership Subscriptions
 
-### `GET /api/subscriptions?filters[active][$eq]=true&sort=Price:asc`
+### `GET /api/subscriptions?filters[active][$eq]=true&sort=price:asc`
 
 Headers:
 

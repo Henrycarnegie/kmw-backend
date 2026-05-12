@@ -880,9 +880,13 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
-    StartDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    startDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
     stripeCustomerId: Schema.Attribute.String;
     stripeSubscriptionId: Schema.Attribute.String;
+    subscription_plan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::subscription-plan.subscription-plan'
+    >;
     subscriptionStatus: Schema.Attribute.Enumeration<
       [
         'pending_payment',
@@ -892,10 +896,6 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
         'expired',
         'inactive',
       ]
-    >;
-    subscrition_plans: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::subscrition-plan.subscrition-plan'
     >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -967,7 +967,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    Amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -992,7 +992,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     >;
     paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
       Schema.Attribute.DefaultTo<'pending'>;
-    Provider: Schema.Attribute.String;
+    provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     purchaseType: Schema.Attribute.Enumeration<
       ['membership', 'renewal', 'course', 'webinar', 'donation']
@@ -1154,38 +1154,38 @@ export interface ApiSubmissionSubmission extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiSubscritionPlanSubscritionPlan
+export interface ApiSubscriptionPlanSubscriptionPlan
   extends Struct.CollectionTypeSchema {
-  collectionName: 'subscrition_plans';
+  collectionName: 'subscription_plans';
   info: {
-    displayName: 'Subscription';
-    pluralName: 'subscrition-plans';
-    singularName: 'subscrition-plan';
+    displayName: 'Subscription Plan';
+    pluralName: 'subscription-plans';
+    singularName: 'subscription-plan';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    accessLevel: Schema.Attribute.Enumeration<['FREE_USER', 'LOW', 'PREMIUM']> &
+    accessLevel: Schema.Attribute.Enumeration<['free_user', 'low', 'premium']> &
       Schema.Attribute.Required;
     active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     discountPercentage: Schema.Attribute.Integer;
-    Duration: Schema.Attribute.Integer & Schema.Attribute.Required;
+    duration: Schema.Attribute.Integer & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::subscrition-plan.subscrition-plan'
+      'api::subscription-plan.subscription-plan'
     > &
       Schema.Attribute.Private;
     memberships: Schema.Attribute.Relation<
       'oneToMany',
       'api::membership.membership'
     >;
-    Name: Schema.Attribute.String & Schema.Attribute.Required;
-    Price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     stripePriceId: Schema.Attribute.String;
     stripeRenewalCouponId: Schema.Attribute.String;
@@ -1881,7 +1881,7 @@ declare module '@strapi/strapi' {
       'api::resource.resource': ApiResourceResource;
       'api::sel-project.sel-project': ApiSelProjectSelProject;
       'api::submission.submission': ApiSubmissionSubmission;
-      'api::subscrition-plan.subscrition-plan': ApiSubscritionPlanSubscritionPlan;
+      'api::subscription-plan.subscription-plan': ApiSubscriptionPlanSubscriptionPlan;
       'api::unit-progress.unit-progress': ApiUnitProgressUnitProgress;
       'api::webinar-registration.webinar-registration': ApiWebinarRegistrationWebinarRegistration;
       'api::webinar.webinar': ApiWebinarWebinar;

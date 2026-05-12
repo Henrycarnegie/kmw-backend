@@ -30,13 +30,9 @@
     },
     "accessLevel": {
       "type": "enumeration",
-      "enum": [
-        "free_user",
-        "low",
-        "premium"
-      ]
+      "enum": ["free_user", "low", "premium"]
     },
-    "StartDate": {
+    "startDate": {
       "type": "datetime",
       "required": true
     },
@@ -54,10 +50,11 @@
       "type": "boolean",
       "default": false
     },
-    "subscrition_plans": {
+    "subscription_plan": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::subscrition-plan.subscrition-plan"
+      "relation": "manyToOne",
+      "target": "api::subscription-plan.subscription-plan",
+      "inversedBy": "memberships"
     },
     "payments": {
       "type": "relation",
