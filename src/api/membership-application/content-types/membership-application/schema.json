@@ -4,7 +4,7 @@
   "info": {
     "singularName": "membership-application",
     "pluralName": "membership-applications",
-    "displayName": "Membership Application"
+    "displayName": "Membership Application Form"
   },
   "options": {
     "draftAndPublish": false
@@ -15,6 +15,9 @@
       "type": "email",
       "required": true,
       "unique": true
+    },
+    "planId": {
+      "type": "integer"
     },
     "fullName": {
       "type": "string"
@@ -42,12 +45,6 @@
     },
     "lineId": {
       "type": "string"
-    },
-    "bankTransferInfo": {
-      "type": "string"
-    },
-    "questionsNeeds": {
-      "type": "text"
     },
     "googleFormResponseId": {
       "type": "string"

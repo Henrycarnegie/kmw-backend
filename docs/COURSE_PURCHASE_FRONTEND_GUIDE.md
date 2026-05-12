@@ -1,6 +1,6 @@
 # Course Purchase Flow — Frontend Integration Guide
 
-This is the per-course purchase flow for users who **don't have membership coverage** for a given course. Membership-covered users get free access — they should never see a "buy" button for those courses (see access matrix below).
+This is the per-course purchase flow for paid courses. Active members may already have access through membership, but the checkout endpoint still allows them to purchase a paid course if they are not already enrolled.
 
 For the membership flow itself, see `MEMBERSHIP_API_FRONTEND_GUIDE.md` in the same folder.
 
@@ -10,7 +10,6 @@ A user reaches the course purchase flow when **all** of:
 
 - The course has `tier === "lowcost"` or `tier === "premium"`
 - The user is logged in
-- The user does **not** have an active membership covering that tier
 - The user is not already enrolled
 
 Free courses (`tier === "free"`) require no purchase — show content to any logged-in user.
@@ -30,9 +29,6 @@ Use this for the button label on each course card:
 function courseCta(course, user, memberships, enrollments) {
   if (course.tier === 'free') return 'Open';
   if (enrollments.some(e => e.course?.id === course.id)) return 'Open';
-  const m = activeMembership(memberships);
-  if (m?.accessLevel === 'premium') return 'Open';
-  if (m?.accessLevel === 'low' && course.tier === 'lowcost') return 'Open';
   return `Buy — $${course.price}`;
 }
 ```
@@ -72,7 +68,6 @@ Each course has `id`, `title`, `description`, `tier`, `price`, `thumbnail`, plus
 | 404 | `Course not found` | Wrong id or deleted |
 | 400 | `Course is free` | Don't show buy for `tier=free` |
 | 400 | `Course has no price set` | Backend admin issue |
-| 400 | `Your membership already covers this course` | Refresh `/me` and re-render |
 | 400 | `You are already enrolled in this course` | Refresh state |
 
 ### 3.3 Stripe redirect targets
@@ -129,8 +124,8 @@ Within ~5s, response includes enrollment for `courseId=7`.
 ### 4.4 Idempotency
 Replays via `stripe events resend evt_...` return `{ received: true, duplicate: true }`. No duplicate enrollment rows.
 
-### 4.5 Member-already-covered rejection
-LOW member buying a `lowcost` course → 400 `Your membership already covers this course`.
+### 4.5 Member purchase
+LOW and PREMIUM members can purchase paid courses as long as they are not already enrolled.
 
 ## 5. Errors and recovery
 

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "subscrition-plan",
     "pluralName": "subscrition-plans",
-    "displayName": "subscription_plans"
+    "displayName": "Subscription"
   },
   "options": {
     "draftAndPublish": true

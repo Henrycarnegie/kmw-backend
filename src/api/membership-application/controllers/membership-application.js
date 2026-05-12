@@ -12,8 +12,6 @@ const KEY_MAP = {
   '戶籍地址': 'address',
   '聯絡電話': 'phone',
   'Line 帳號': 'lineId',
-  '匯款銀行與帳號後五碼': 'bankTransferInfo',
-  '你是否有任何問題或需求?': 'questionsNeeds',
 };
 
 function normalizeAnswers(answers) {
@@ -26,7 +24,62 @@ function normalizeAnswers(answers) {
   return out;
 }
 
+function normalizeWebsiteApplication(body) {
+  const allowedFields = [
+    'planId',
+    'fullName',
+    'birthday',
+    'email',
+    'idNumber',
+    'gender',
+    'positionTitle',
+    'isUniversityStudent',
+    'address',
+    'phone',
+    'lineId',
+  ];
+  const data = {};
+  for (const field of allowedFields) {
+    if (body[field] !== undefined && body[field] !== null) data[field] = body[field];
+  }
+  delete data.email;
+  return data;
+}
+
+async function upsertApplication(email, data) {
+  const existing = await strapi.entityService.findMany('api::membership-application.membership-application', {
+    filters: { email },
+    limit: 1,
+  });
+
+  if (existing && existing.length > 0) {
+    return strapi.entityService.update('api::membership-application.membership-application', existing[0].id, { data });
+  }
+
+  return strapi.entityService.create('api::membership-application.membership-application', { data });
+}
+
 module.exports = {
+  async submit(ctx) {
+    const user = ctx.state.user;
+    if (!user) return ctx.unauthorized();
+
+    const payload = ctx.request.body || {};
+    const email = (user.email || '').toLowerCase().trim();
+    if (!email) return ctx.badRequest('User email required');
+
+    const data = {
+      email,
+      users_permissions_user: user.id,
+      ...normalizeWebsiteApplication(payload),
+      submittedAt: new Date(),
+      rawAnswers: payload,
+    };
+
+    const row = await upsertApplication(email, data);
+    ctx.body = { ok: true, id: row.id, email: row.email };
+  },
+
   async intake(ctx) {
     const sig = ctx.request.headers['x-form-signature'];
     const raw = ctx.request.body && ctx.request.body[Symbol.for('unparsedBody')];
@@ -62,17 +115,7 @@ module.exports = {
       rawAnswers: payload.answers || null,
     };
 
-    const existing = await strapi.entityService.findMany('api::membership-application.membership-application', {
-      filters: { email },
-      limit: 1,
-    });
-
-    let row;
-    if (existing && existing.length > 0) {
-      row = await strapi.entityService.update('api::membership-application.membership-application', existing[0].id, { data });
-    } else {
-      row = await strapi.entityService.create('api::membership-application.membership-application', { data });
-    }
+    const row = await upsertApplication(email, data);
 
     ctx.body = { ok: true, id: row.id, email: row.email };
   },

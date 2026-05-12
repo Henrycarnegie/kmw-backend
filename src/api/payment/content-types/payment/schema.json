@@ -30,7 +30,8 @@
         "membership",
         "renewal",
         "course",
-        "webinar"
+        "webinar",
+        "donation"
       ]
     },
     "Provider": {
@@ -41,6 +42,7 @@
       "enum": [
         "stripe",
         "paypal",
+        "line_pay",
         "bank_transfer"
       ]
     },
@@ -58,6 +60,15 @@
     },
     "stripeEventId": {
       "type": "string"
+    },
+    "donorName": {
+      "type": "string"
+    },
+    "donorEmail": {
+      "type": "email"
+    },
+    "donorMessage": {
+      "type": "text"
     },
     "users_permissions_user": {
       "type": "relation",
