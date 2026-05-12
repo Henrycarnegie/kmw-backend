@@ -809,7 +809,6 @@ export interface ApiMembershipApplicationMembershipApplication
   };
   attributes: {
     address: Schema.Attribute.Text;
-    bankTransferInfo: Schema.Attribute.String;
     birthday: Schema.Attribute.Date;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -830,9 +829,9 @@ export interface ApiMembershipApplicationMembershipApplication
     > &
       Schema.Attribute.Private;
     phone: Schema.Attribute.String;
+    planId: Schema.Attribute.Integer;
     positionTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    questionsNeeds: Schema.Attribute.Text;
     rawAnswers: Schema.Attribute.JSON;
     submittedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;

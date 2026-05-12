@@ -98,17 +98,17 @@ Log in an existing user.
 **Request body**
 ```json
 {
+  "planId": 1,
   "fullName": "Alice Wong",
   "birthday": "1990-01-01",
-  "idNumber": "A123456789",
+  "email": "alice@example.com",
   "gender": "Female",
-  "positionTitle": "Engineer",
-  "isUniversityStudent": "No",
-  "address": "Taipei",
-  "phone": "0912345678",
   "lineId": "alicew",
-  "bankTransferInfo": "12345",
-  "questionsNeeds": "No questions right now"
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No"
 }
 ```
 
@@ -125,18 +125,17 @@ Log in an existing user.
 ```json
 {
   "id": 4,
+  "planId": 1,
   "email": "alice@example.com",
   "fullName": "Alice Wong",
   "birthday": "1990-01-01",
-  "idNumber": "A123456789",
   "gender": "Female",
+  "lineId": "alicew",
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
   "positionTitle": "Engineer",
   "isUniversityStudent": "No",
-  "address": "Taipei",
-  "phone": "0912345678",
-  "lineId": "alicew",
-  "bankTransferInfo": "12345",
-  "questionsNeeds": "...",
   "submittedAt": "2026-05-08T15:46:56.000Z"
 }
 ```
@@ -157,7 +156,20 @@ Log in an existing user.
 
 **Request body**
 ```json
-{ "subscriptionId": 1, "paymentProvider": "paypal" }
+{
+  "subscriptionId": 1,
+  "paymentProvider": "paypal",
+  "fullName": "Alice Wong",
+  "birthday": "1990-01-01",
+  "email": "alice@example.com",
+  "gender": "Female",
+  "lineId": "alicew",
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No"
+}
 ```
 
 `subscriptionId` corresponds to a Subscription in Strapi admin. Get the list via `GET /api/subscriptions?filters[active][$eq]=true` .
@@ -174,6 +186,8 @@ Log in an existing user.
 **Redirect the user to `url`** (e.g., `window.location.href = url`).
 
 Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected subscription duration.
+
+The checkout endpoint can also save the membership application form. If the button after the form should go straight to payment, send the form fields with this request and redirect to the returned `url`. If the form was already saved with `POST /api/membership-applications`, you may send only `subscriptionId` and `paymentProvider`.
 
 **Common errors**
 | Status | Body message | Fix |

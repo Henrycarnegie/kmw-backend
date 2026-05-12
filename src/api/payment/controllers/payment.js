@@ -31,6 +31,64 @@ async function getApplicationByEmail(strapi, email) {
   return found && found[0];
 }
 
+function normalizeMembershipApplicationPayload(body, selectedPlanId) {
+  const allowedFields = [
+    'fullName',
+    'birthday',
+    'idNumber',
+    'gender',
+    'positionTitle',
+    'isUniversityStudent',
+    'address',
+    'phone',
+    'lineId',
+  ];
+  const data = {};
+  for (const field of allowedFields) {
+    if (body[field] !== undefined && body[field] !== null) data[field] = body[field];
+  }
+  if (selectedPlanId) data.planId = Number(selectedPlanId);
+  return data;
+}
+
+function hasMembershipApplicationPayload(body) {
+  return [
+    'fullName',
+    'birthday',
+    'gender',
+    'lineId',
+    'idNumber',
+    'phone',
+    'address',
+    'positionTitle',
+    'isUniversityStudent',
+  ].some(field => body[field] !== undefined && body[field] !== null && body[field] !== '');
+}
+
+async function upsertMembershipApplication(strapi, user, body, selectedPlanId) {
+  const email = (user.email || '').toLowerCase().trim();
+  if (!email) throw new Error('User email required');
+
+  const data = {
+    email,
+    users_permissions_user: user.id,
+    ...normalizeMembershipApplicationPayload(body, selectedPlanId),
+    submittedAt: new Date(),
+    rawAnswers: body,
+  };
+
+  const existing = await strapi.entityService.findMany('api::membership-application.membership-application', {
+    filters: { email },
+    limit: 1,
+  });
+
+  if (existing && existing.length > 0) {
+    return strapi.entityService.update('api::membership-application.membership-application', existing[0].id, { data });
+  }
+
+  return strapi.entityService.create('api::membership-application.membership-application', { data });
+}
+
 function getMembershipDates(durationDays) {
   const start = new Date();
   const end = new Date(start);
@@ -405,7 +463,16 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     if (!isSupportedPaymentProvider(provider)) return ctx.badRequest('Unsupported payment provider');
     if (!selectedPlanId) return ctx.badRequest('subscriptionId required');
 
-    const application = await getApplicationByEmail(strapi, user.email);
+    let application = await getApplicationByEmail(strapi, user.email);
+    if (hasMembershipApplicationPayload(ctx.request.body || {})) {
+      try {
+        application = await upsertMembershipApplication(strapi, user, ctx.request.body || {}, selectedPlanId);
+      } catch (err) {
+        strapi.log.error('Membership application form save error:', err);
+        return ctx.internalServerError(err.message);
+      }
+    }
+
     if (!application) {
       return ctx.badRequest('Please complete the membership application form before purchasing');
     }

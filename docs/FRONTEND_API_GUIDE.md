@@ -594,17 +594,17 @@ Content-Type: application/json
 ```
 ```json
 {
+  "planId": 1,
   "fullName": "Alice Wong",
   "birthday": "1990-01-01",
-  "idNumber": "A123456789",
+  "email": "alice@example.com",
   "gender": "Female",
-  "positionTitle": "Engineer",
-  "isUniversityStudent": "No",
-  "address": "Taipei",
-  "phone": "0912345678",
   "lineId": "alicew",
-  "bankTransferInfo": "12345",
-  "questionsNeeds": "No questions right now"
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No"
 }
 ```
 **200**
@@ -621,18 +621,17 @@ Authorization: Bearer <jwt>
 ```json
 {
   "id": 4,
+  "planId": 1,
   "email": "alice@example.com",
   "fullName": "Alice Wong",
   "birthday": "1990-01-01",
-  "idNumber": "A123456789",
   "gender": "Female",
+  "lineId": "alicew",
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
   "positionTitle": "Engineer",
   "isUniversityStudent": "No",
-  "address": "Taipei",
-  "phone": "0912345678",
-  "lineId": "alicew",
-  "bankTransferInfo": "12345",
-  "questionsNeeds": "...",
   "submittedAt": "2026-05-08T15:46:56.000Z"
 }
 ```
@@ -658,7 +657,20 @@ Returns array of subscriptions, each with `id`, `Name`, `accessLevel` (`LOW`/`PR
 Initiate a hosted membership checkout.
 ```json
 // Request
-{ "subscriptionId": 1, "paymentProvider": "paypal" }
+{
+  "subscriptionId": 1,
+  "paymentProvider": "paypal",
+  "fullName": "Alice Wong",
+  "birthday": "1990-01-01",
+  "email": "alice@example.com",
+  "gender": "Female",
+  "lineId": "alicew",
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No"
+}
 ```
 **200**
 ```json
@@ -667,6 +679,8 @@ Initiate a hosted membership checkout.
 **Redirect:** `window.location.href = response.url`.
 
 Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected subscription duration.
+
+This endpoint can save the membership application form and create checkout in one request. Use this for the "continue to payment" button after the form. If the application form has already been saved, sending only `subscriptionId` and `paymentProvider` still works.
 
 **Errors** (most common):
 | Status | Message | What happened |

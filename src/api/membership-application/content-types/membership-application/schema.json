@@ -16,6 +16,9 @@
       "required": true,
       "unique": true
     },
+    "planId": {
+      "type": "integer"
+    },
     "fullName": {
       "type": "string"
     },
@@ -42,12 +45,6 @@
     },
     "lineId": {
       "type": "string"
-    },
-    "bankTransferInfo": {
-      "type": "string"
-    },
-    "questionsNeeds": {
-      "type": "text"
     },
     "googleFormResponseId": {
       "type": "string"

@@ -45,17 +45,17 @@ Body:
 
 ```json
 {
+  "planId": 1,
   "fullName": "Alice Wong",
   "birthday": "1990-01-01",
-  "idNumber": "A123456789",
+  "email": "alice@example.com",
   "gender": "Female",
-  "positionTitle": "Engineer",
-  "isUniversityStudent": "No",
-  "address": "Taipei",
-  "phone": "0912345678",
   "lineId": "alicew",
-  "bankTransferInfo": "12345",
-  "questionsNeeds": "Testing membership application form"
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No"
 }
 ```
 
@@ -113,7 +113,17 @@ PayPal:
 ```json
 {
   "subscriptionId": 1,
-  "paymentProvider": "paypal"
+  "paymentProvider": "paypal",
+  "fullName": "Alice Wong",
+  "birthday": "1990-01-01",
+  "email": "alice@example.com",
+  "gender": "Female",
+  "lineId": "alicew",
+  "idNumber": "A123456789",
+  "phone": "0912345678",
+  "address": "Taipei",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No"
 }
 ```
 

@@ -12,8 +12,6 @@ const KEY_MAP = {
   '戶籍地址': 'address',
   '聯絡電話': 'phone',
   'Line 帳號': 'lineId',
-  '匯款銀行與帳號後五碼': 'bankTransferInfo',
-  '你是否有任何問題或需求?': 'questionsNeeds',
 };
 
 function normalizeAnswers(answers) {
@@ -28,8 +26,10 @@ function normalizeAnswers(answers) {
 
 function normalizeWebsiteApplication(body) {
   const allowedFields = [
+    'planId',
     'fullName',
     'birthday',
+    'email',
     'idNumber',
     'gender',
     'positionTitle',
@@ -37,13 +37,12 @@ function normalizeWebsiteApplication(body) {
     'address',
     'phone',
     'lineId',
-    'bankTransferInfo',
-    'questionsNeeds',
   ];
   const data = {};
   for (const field of allowedFields) {
     if (body[field] !== undefined && body[field] !== null) data[field] = body[field];
   }
+  delete data.email;
   return data;
 }
 
