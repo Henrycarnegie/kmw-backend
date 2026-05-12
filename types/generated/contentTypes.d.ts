@@ -800,7 +800,7 @@ export interface ApiMembershipApplicationMembershipApplication
   extends Struct.CollectionTypeSchema {
   collectionName: 'membership_applications';
   info: {
-    displayName: 'Membership Application';
+    displayName: 'Membership Application Form';
     pluralName: 'membership-applications';
     singularName: 'membership-application';
   };
@@ -963,6 +963,9 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    donorEmail: Schema.Attribute.Email;
+    donorMessage: Schema.Attribute.Text;
+    donorName: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -975,14 +978,14 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     >;
     paymentDate: Schema.Attribute.DateTime;
     paymentMethod: Schema.Attribute.Enumeration<
-      ['stripe', 'paypal', 'bank_transfer']
+      ['stripe', 'paypal', 'line_pay', 'bank_transfer']
     >;
     paymentStatus: Schema.Attribute.Enumeration<['pending', 'paid', 'failed']> &
       Schema.Attribute.DefaultTo<'pending'>;
     Provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     purchaseType: Schema.Attribute.Enumeration<
-      ['membership', 'renewal', 'course', 'webinar']
+      ['membership', 'renewal', 'course', 'webinar', 'donation']
     >;
     stripeEventId: Schema.Attribute.String;
     stripeInvoiceId: Schema.Attribute.String;
@@ -1145,7 +1148,7 @@ export interface ApiSubscritionPlanSubscritionPlan
   extends Struct.CollectionTypeSchema {
   collectionName: 'subscrition_plans';
   info: {
-    displayName: 'subscription_plans';
+    displayName: 'Subscription';
     pluralName: 'subscrition-plans';
     singularName: 'subscrition-plan';
   };

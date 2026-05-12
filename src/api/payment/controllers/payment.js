@@ -399,19 +399,20 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
   async createMembershipCheckout(ctx) {
     const user = ctx.state.user;
     if (!user) return ctx.unauthorized();
-    const { planId } = ctx.request.body || {};
+    const { planId, subscriptionId } = ctx.request.body || {};
+    const selectedPlanId = subscriptionId || planId;
     const provider = normalizePaymentProvider(ctx.request.body?.paymentProvider || ctx.request.body?.provider);
     if (!isSupportedPaymentProvider(provider)) return ctx.badRequest('Unsupported payment provider');
-    if (!planId) return ctx.badRequest('planId required');
+    if (!selectedPlanId) return ctx.badRequest('subscriptionId required');
 
     const application = await getApplicationByEmail(strapi, user.email);
     if (!application) {
       return ctx.badRequest('Please complete the membership application form before purchasing');
     }
 
-    const plan = await strapi.entityService.findOne('api::subscrition-plan.subscrition-plan', planId);
-    if (!plan || !plan.active) return ctx.badRequest('Plan not found or inactive');
-    if (!plan.Price || plan.Price <= 0) return ctx.badRequest('Plan has no price set');
+    const plan = await strapi.entityService.findOne('api::subscrition-plan.subscrition-plan', selectedPlanId);
+    if (!plan || !plan.active) return ctx.badRequest('Subscription not found or inactive');
+    if (!plan.Price || plan.Price <= 0) return ctx.badRequest('Subscription has no price set');
 
     const existing = await getActiveMembership(strapi, user.id);
     if (existing) return ctx.badRequest('You already have an active membership; use the billing portal to manage it');
@@ -433,7 +434,7 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
       }
     }
 
-    if (!plan.stripePriceId) return ctx.badRequest('Plan has no Stripe price configured');
+    if (!plan.stripePriceId) return ctx.badRequest('Subscription has no Stripe price configured');
 
     try {
       const session = await stripe.checkout.sessions.create({

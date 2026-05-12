@@ -93,7 +93,7 @@ Log in an existing user.
 
 ### 4.3 `POST /api/membership-applications`
 
-**Auth required.** Create or update the logged-in user's membership application.
+**Auth required.** Create or update the logged-in user's membership application form.
 
 **Request body**
 ```json
@@ -148,7 +148,7 @@ Log in an existing user.
 
 **Use this to**
 - Show "complete the form" CTA if 404
-- Show "you're all set, choose a plan" CTA if 200
+- Show "you're all set, choose a subscription" CTA if 200
 - Poll this every 5–10s after the user reports they've submitted the form
 
 ### 4.5 `POST /api/payments/checkout/membership`
@@ -157,12 +157,12 @@ Log in an existing user.
 
 **Request body**
 ```json
-{ "planId": 1, "paymentProvider": "paypal" }
+{ "subscriptionId": 1, "paymentProvider": "paypal" }
 ```
 
-`planId` corresponds to a Subscription Plan in Strapi admin. Get the list via `GET /api/subscrition-plans?filters[active][$eq]=true` *(yes, the path has a typo — `subscrition`)*.
+`subscriptionId` corresponds to a Subscription in Strapi admin. Get the list via `GET /api/subscriptions?filters[active][$eq]=true` .
 
-| planId | Name | Tier | Price/year |
+| subscriptionId | Name | Tier | Price/year |
 |---|---|---|---|
 | 1 | Low Fee Annual | LOW | $80 |
 | 2 | Premium Annual | PREMIUM | $100 |
@@ -173,17 +173,17 @@ Log in an existing user.
 ```
 **Redirect the user to `url`** (e.g., `window.location.href = url`).
 
-Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected plan duration.
+Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected subscription duration.
 
 **Common errors**
 | Status | Body message | Fix |
 |---|---|---|
 | 401 | `Missing or invalid credentials` | JWT missing/expired — log in again |
 | 400 | `Please complete the membership application form before purchasing` | User skipped the form. Redirect to it. |
-| 400 | `planId required` | You forgot to send it |
-| 400 | `Plan not found or inactive` | Wrong planId, or plan was disabled in admin |
-| 400 | `Plan has no price set` | Backend admin needs to set the `Price` on the plan row |
-| 400 | `Plan has no Stripe price configured` | Backend admin needs to set the `stripePriceId` on the plan row |
+| 400 | `subscriptionId required` | You forgot to send it |
+| 400 | `Subscription not found or inactive` | Wrong subscriptionId, or subscription was disabled in admin |
+| 400 | `Subscription has no price set` | Backend admin needs to set the `Price` on the subscription row |
+| 400 | `Subscription has no Stripe price configured` | Backend admin needs to set the `stripePriceId` on the subscription row |
 | 400 | `You already have an active membership; use the billing portal to manage it` | Send them to `/api/payments/portal` |
 
 ### 4.6 Checkout success / cancel pages
@@ -291,7 +291,7 @@ Any future expiry (`12/34`), any 3-digit CVC (`123`), any postal code.
 
 ## 7. Verification checklist — the five things proven working
 
-### ✅ 1. Website membership application
+### ✅ 1. Website membership application form
 Frontend submits `POST /api/membership-applications`, then verifies it with `GET /api/membership-applications/me` → 200.
 
 ### ✅ 2. Form-gated checkout

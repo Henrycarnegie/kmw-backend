@@ -15,7 +15,7 @@ Complete reference for the frontend team. Covers authentication, membership sign
 5. [Endpoint reference](#5-endpoint-reference)
    - 5.0 [Frontend API cards](#50-frontend-api-cards)
    - 5.1 [Authentication](#51-authentication-endpoints)
-   - 5.2 [Membership application](#52-membership-application)
+   - 5.2 [Membership application form](#52-membership-application-form)
    - 5.3 [Membership purchase](#53-membership-purchase)
    - 5.4 [Course purchase](#54-course-purchase)
    - 5.5 [Webinar purchase](#55-webinar-purchase)
@@ -60,9 +60,9 @@ The endpoints you'll use most:
 |---|---|---|---|
 | Register | POST | `/api/auth/local/register` | none |
 | Log in | POST | `/api/auth/local` | none |
-| Check application status | GET | `/api/membership-applications/me` | JWT |
-| Submit membership application | POST | `/api/membership-applications` | JWT |
-| List subscription plans | GET | `/api/subscrition-plans?filters[active][$eq]=true` | JWT |
+| Check membership application form status | GET | `/api/membership-applications/me` | JWT |
+| Submit membership application form | POST | `/api/membership-applications` | JWT |
+| List subscriptions | GET | `/api/subscriptions?filters[active][$eq]=true` | JWT |
 | Buy membership | POST | `/api/payments/checkout/membership` | JWT |
 | Buy course | POST | `/api/payments/checkout/course` | JWT |
 | Buy webinar | POST | `/api/payments/checkout/webinar` | JWT |
@@ -234,11 +234,11 @@ const res = await fetch(`${API_URL}/api/users/me?populate=memberships,enrollment
 const user = await res.json();
 ```
 
-#### API: Membership application status
+#### API: Membership application form status
 
 | Field | Value |
 |---|---|
-| API name | Membership application status |
+| API name | Membership application form status |
 | Method | `GET /api/membership-applications/me` |
 | Authentication | JWT required |
 | Middleware | Strapi Users & Permissions JWT auth; custom route has no extra middleware |
@@ -247,7 +247,7 @@ const user = await res.json();
 
 Example picture:
 ```text
-User submits website form -> Backend saves application -> Show plan picker
+User submits website form -> Backend saves application -> Show subscription picker
 ```
 
 Example how to use:
@@ -256,15 +256,15 @@ const res = await fetch(`${API_URL}/api/membership-applications/me`, {
   headers: { Authorization: `Bearer ${jwt}` },
 });
 if (res.status === 404) showMembershipApplicationForm();
-if (res.ok) showPlanPicker(await res.json());
+if (res.ok) showSubscriptionPicker(await res.json());
 ```
 
-#### API: List subscription plans
+#### API: List subscriptions
 
 | Field | Value |
 |---|---|
-| API name | List subscription plans |
-| Method | `GET /api/subscrition-plans?filters[active][$eq]=true&sort=Price:asc` |
+| API name | List subscriptions |
+| Method | `GET /api/subscriptions?filters[active][$eq]=true&sort=Price:asc` |
 | Authentication | JWT required |
 | Middleware | Strapi Users & Permissions JWT auth; no custom project middleware |
 | Response status | `200` success, `401` missing/invalid JWT |
@@ -272,15 +272,15 @@ if (res.ok) showPlanPicker(await res.json());
 
 Example picture:
 ```text
-Application approved -> GET active plans -> User selects LOW or PREMIUM -> Checkout
+Application approved -> GET active subscriptions -> User selects LOW or PREMIUM subscription -> Checkout
 ```
 
 Example how to use:
 ```ts
-const res = await fetch(`${API_URL}/api/subscrition-plans?filters[active][$eq]=true&sort=Price:asc`, {
+const res = await fetch(`${API_URL}/api/subscriptions?filters[active][$eq]=true&sort=Price:asc`, {
   headers: { Authorization: `Bearer ${jwt}` },
 });
-const plans = await res.json();
+const subscriptions = await res.json();
 ```
 
 #### API: Membership checkout
@@ -296,7 +296,7 @@ const plans = await res.json();
 
 Example picture:
 ```text
-Plan picker -> POST membership checkout -> Hosted payment -> /membership/success -> Poll /users/me
+Subscription picker -> POST membership checkout -> Hosted payment -> /membership/success -> Poll /users/me
 ```
 
 Example how to use:
@@ -307,7 +307,7 @@ const res = await fetch(`${API_URL}/api/payments/checkout/membership`, {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${jwt}`,
   },
-  body: JSON.stringify({ planId, paymentProvider: 'line_pay' }),
+  body: JSON.stringify({ subscriptionId, paymentProvider: 'line_pay' }),
 });
 const checkout = await res.json();
 window.location.href = checkout.url;
@@ -582,12 +582,12 @@ Same response shape as register. Error: 400 `Invalid identifier or password`.
 
 ---
 
-### 5.2 Membership application
+### 5.2 Membership application form
 
 The frontend submits this form directly from the website. The user's account email is used automatically from the JWT, so do not ask users to type their email again unless you only need it for display.
 
 #### `POST /api/membership-applications`
-Create or update the logged-in user's membership application.
+Create or update the logged-in user's membership application form.
 ```
 Authorization: Bearer <jwt>
 Content-Type: application/json
@@ -641,24 +641,24 @@ Authorization: Bearer <jwt>
 { "data": null, "error": { "status": 404, "name": "NotFoundError", "message": "No application on file" } }
 ```
 
-**Use this to** decide whether to show the website application form or the plan picker.
+**Use this to** decide whether to show the website application form or the subscription picker.
 
 ---
 
 ### 5.3 Membership purchase
 
-#### `GET /api/subscrition-plans?filters[active][$eq]=true&sort=Price:asc`
-List plans dynamically (don't hardcode IDs — they may differ per environment).
+#### `GET /api/subscriptions?filters[active][$eq]=true&sort=Price:asc`
+List subscriptions dynamically (don't hardcode IDs — they may differ per environment).
 ```
 Authorization: Bearer <jwt>
 ```
-Returns array of plans, each with `id`, `Name`, `accessLevel` (`LOW`/`PREMIUM`), `Price`, `Duration`, `discountPercentage`. *(Note: field names start with capitals — `Name`, `Price`, `Duration` — that's a Strapi quirk.)*
+Returns array of subscriptions, each with `id`, `Name`, `accessLevel` (`LOW`/`PREMIUM`), `Price`, `Duration`, `discountPercentage`. *(Note: field names start with capitals — `Name`, `Price`, `Duration` — that's a Strapi quirk.)*
 
 #### `POST /api/payments/checkout/membership`
 Initiate a hosted membership checkout.
 ```json
 // Request
-{ "planId": 1, "paymentProvider": "paypal" }
+{ "subscriptionId": 1, "paymentProvider": "paypal" }
 ```
 **200**
 ```json
@@ -666,16 +666,16 @@ Initiate a hosted membership checkout.
 ```
 **Redirect:** `window.location.href = response.url`.
 
-Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected plan duration.
+Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected subscription duration.
 
 **Errors** (most common):
 | Status | Message | What happened |
 |---|---|---|
 | 401 | `Missing or invalid credentials` | JWT missing/expired |
-| 400 | `planId required` | You forgot the body field |
-| 400 | `Plan not found or inactive` | Wrong id or plan disabled |
-| 400 | `Plan has no price set` | Backend admin hasn't configured the plan price |
-| 400 | `Plan has no Stripe price configured` | Backend admin hasn't wired Stripe IDs |
+| 400 | `subscriptionId required` | You forgot the body field |
+| 400 | `Subscription not found or inactive` | Wrong id or subscription disabled |
+| 400 | `Subscription has no price set` | Backend admin hasn't configured the subscription price |
+| 400 | `Subscription has no Stripe price configured` | Backend admin hasn't wired Stripe IDs |
 | 400 | `Please complete the membership application form before purchasing` | User skipped the form. Redirect to it. |
 | 400 | `You already have an active membership; use the billing portal to manage it` | Send them to `/api/payments/portal` |
 
@@ -877,11 +877,11 @@ The full happy path from first visit to active member to course access:
    GET /api/membership-applications/me
         │
         ▼ (200 once application lands)
-   Show plan picker:
-     GET /api/subscrition-plans?filters[active][$eq]=true
+   Show subscription picker:
+     GET /api/subscriptions?filters[active][$eq]=true
         │
-        ▼ (user picks plan)
-   POST /api/payments/checkout/membership { planId }
+        ▼ (user picks subscription)
+   POST /api/payments/checkout/membership { subscriptionId }
         │
         ▼ (200 returns url)
    window.location.href = url  ─────────────► hosted checkout
@@ -930,7 +930,7 @@ LOGGED_IN_NO_APPLICATION
     │ ─── 200 (application saved) ───────────┐
     │                                         ▼
     │                                READY_TO_PAY
-    │                                         │ (user picks plan, clicks buy)
+    │                                         │ (user picks subscription, clicks buy)
     │                                         ▼
     │                                  POST /checkout/membership
     │                                         │ (200, redirect)
@@ -1033,7 +1033,7 @@ When ready to take real payments:
    - `LINE_PAY_CHANNEL_ID=...`
    - `LINE_PAY_CHANNEL_SECRET=...`
    - `LINE_PAY_CURRENCY=USD` or a LINE Pay-supported currency for your channel
-5. Backend updates the `subscrition_plans` rows in production DB with the live `stripePriceId` values
+5. Backend updates the `Subscription` rows in production DB with the live `stripePriceId` values
 6. Frontend updates the API base URL to your production backend
 7. Test the full flow with real cards/accounts. Stripe test cards only work in Stripe test mode; PayPal and LINE Pay should be tested first against their sandbox environments.
 
@@ -1087,7 +1087,7 @@ For filtering and populating responses:
 
 | Want | Query |
 |---|---|
-| Active plans only | `?filters[active][$eq]=true` |
+| Active subscriptions only | `?filters[active][$eq]=true` |
 | Upcoming webinars | `?filters[scheduled_at][$gt]=2026-05-08T00:00:00.000Z` |
 | Sort by date asc | `?sort=scheduled_at:asc` |
 | Multiple sort | `?sort[0]=scheduled_at:asc&sort[1]=title:asc` |

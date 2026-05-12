@@ -28,7 +28,7 @@ Use the returned JWT for membership and course checkout:
 }
 ```
 
-## 2. Submit Membership Application
+## 2. Submit Membership Application Form
 
 Membership payment requires the user to have submitted the website application form.
 
@@ -55,7 +55,7 @@ Body:
   "phone": "0912345678",
   "lineId": "alicew",
   "bankTransferInfo": "12345",
-  "questionsNeeds": "Testing membership application"
+  "questionsNeeds": "Testing membership application form"
 }
 ```
 
@@ -69,7 +69,7 @@ Expected response:
 }
 ```
 
-## 3. Membership Application Check
+## 3. Membership Application Form Check
 
 Confirm the application was saved.
 
@@ -83,9 +83,9 @@ Authorization: Bearer <JWT>
 
 No JSON body.
 
-## 4. List Membership Plans
+## 4. List Membership Subscriptions
 
-### `GET /api/subscrition-plans?filters[active][$eq]=true&sort=Price:asc`
+### `GET /api/subscriptions?filters[active][$eq]=true&sort=Price:asc`
 
 Headers:
 
@@ -95,7 +95,7 @@ Authorization: Bearer <JWT>
 
 No JSON body.
 
-Use one returned `id` as `planId`.
+Use one returned `id` as `subscriptionId`.
 
 ## 5. Membership Checkout
 
@@ -112,7 +112,7 @@ PayPal:
 
 ```json
 {
-  "planId": 1,
+  "subscriptionId": 1,
   "paymentProvider": "paypal"
 }
 ```
@@ -121,7 +121,7 @@ LINE Pay:
 
 ```json
 {
-  "planId": 1,
+  "subscriptionId": 1,
   "paymentProvider": "line_pay"
 }
 ```
@@ -130,7 +130,7 @@ Stripe:
 
 ```json
 {
-  "planId": 1,
+  "subscriptionId": 1,
   "paymentProvider": "stripe"
 }
 ```
@@ -139,7 +139,7 @@ Stripe also works if `paymentProvider` is omitted:
 
 ```json
 {
-  "planId": 1
+  "subscriptionId": 1
 }
 ```
 
