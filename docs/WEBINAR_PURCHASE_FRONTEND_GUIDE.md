@@ -1,6 +1,6 @@
 # Webinar Purchase Flow — Frontend Integration Guide
 
-This is the per-webinar purchase flow for users who **don't have membership coverage** for a given webinar. Membership-covered users get free registration — they should never see a "buy" button for those webinars (see access matrix below).
+This is the per-webinar purchase flow for paid webinars. Active members may already have access through membership, but the checkout endpoint still allows them to purchase a paid webinar if they are not already registered.
 
 For the membership flow itself, see `MEMBERSHIP_API_FRONTEND_GUIDE.md`. The course flow lives at `COURSE_PURCHASE_FRONTEND_GUIDE.md` — this is its mirror image, just for webinars.
 
@@ -10,7 +10,6 @@ A user reaches the webinar purchase flow when **all** of:
 
 - The webinar has `tier === "lowcost"` or `tier === "premium"`
 - The user is logged in
-- The user does **not** have an active membership covering that tier
 - The user is not already registered for the webinar
 
 Free webinars (`tier === "free"`) require no purchase — allow registration to any logged-in user. *(There's no separate "free registration" endpoint today — talk to backend if you need one.)*
@@ -28,9 +27,6 @@ Free webinars (`tier === "free"`) require no purchase — allow registration to 
 function webinarCta(webinar, user, memberships, registrations) {
   if (webinar.tier === 'free') return 'Register';
   if (registrations.some(r => r.webinar?.id === webinar.id && r.state !== 'cancelled')) return 'Registered';
-  const m = activeMembership(memberships);
-  if (m?.accessLevel === 'premium') return 'Register';
-  if (m?.accessLevel === 'low' && webinar.tier === 'lowcost') return 'Register';
   return `Buy — $${webinar.price}`;
 }
 ```
@@ -72,7 +68,6 @@ Redirect to `url`.
 | 404 | `Webinar not found` | Wrong id or deleted |
 | 400 | `Webinar is free` | Don't show buy for `tier=free` |
 | 400 | `Webinar has no price set` | Backend admin issue |
-| 400 | `Your membership already covers this webinar` | Refresh `/me` |
 | 400 | `You are already registered for this webinar` | Refresh state |
 
 ### 3.3 Stripe redirect targets
@@ -135,8 +130,8 @@ Within ~5s, response includes registration for `webinar.id === 3` with `state ==
 ### 4.4 Idempotency
 Backend dedupes on `stripeEventId`. Replays don't create duplicate registrations.
 
-### 4.5 Member-already-covered rejection
-With matching membership → 400 `Your membership already covers this webinar`.
+### 4.5 Member purchase
+LOW and PREMIUM members can purchase paid webinars as long as they are not already registered.
 
 ## 5. Errors and recovery
 

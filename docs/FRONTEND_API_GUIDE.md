@@ -15,7 +15,7 @@ Complete reference for the frontend team. Covers authentication, membership sign
 5. [Endpoint reference](#5-endpoint-reference)
    - 5.0 [Frontend API cards](#50-frontend-api-cards)
    - 5.1 [Authentication](#51-authentication-endpoints)
-   - 5.2 [Membership application (Google Form)](#52-membership-application)
+   - 5.2 [Membership application](#52-membership-application)
    - 5.3 [Membership purchase](#53-membership-purchase)
    - 5.4 [Course purchase](#54-course-purchase)
    - 5.5 [Webinar purchase](#55-webinar-purchase)
@@ -35,19 +35,19 @@ Complete reference for the frontend team. Covers authentication, membership sign
 
 The KMW platform sells:
 
-- **Annual memberships** (recurring subscription, two tiers: low fee $80/yr or premium $100/yr) — gated by a required Google Form application
+- **Annual memberships** (recurring subscription, two tiers: low fee $80/yr or premium $100/yr) — gated by a required website application form
 - **Individual courses** (one-time purchase per course)
 - **Individual webinars** (one-time purchase per webinar)
 - **Donations** (one-time amount chosen by the donor; public flow, no signup or login required)
 
-All purchases use **Stripe-hosted Checkout** — the user is redirected to a Stripe page, pays, and is redirected back. The frontend never handles card details directly.
+All purchases use hosted checkout — the user is redirected to Stripe, PayPal, or LINE Pay, pays, and is redirected back. The frontend never handles card or wallet details directly.
 
 **Key architectural points:**
 
 - Backend: **Strapi 5** running on port 1337
 - Database: **PostgreSQL**
-- Payments: **Stripe** (one Stripe account, test mode in dev)
-- Membership signup is **form-gated**: every prospective member fills a Google Form, the form data is server-to-server delivered to the backend by a Google Apps Script trigger, then the user can pay
+- Payments: **Stripe**, **PayPal**, and **LINE Pay** depending on checkout selection
+- Membership signup is **form-gated**: every prospective member fills the website membership application form, then the user can pay
 - Membership activation is **automatic** — the moment Stripe confirms payment, a webhook fires and creates the membership row marked `active`
 
 ---
@@ -61,6 +61,7 @@ The endpoints you'll use most:
 | Register | POST | `/api/auth/local/register` | none |
 | Log in | POST | `/api/auth/local` | none |
 | Check application status | GET | `/api/membership-applications/me` | JWT |
+| Submit membership application | POST | `/api/membership-applications` | JWT |
 | List subscription plans | GET | `/api/subscrition-plans?filters[active][$eq]=true` | JWT |
 | Buy membership | POST | `/api/payments/checkout/membership` | JWT |
 | Buy course | POST | `/api/payments/checkout/course` | JWT |
@@ -78,10 +79,10 @@ Supported payment providers:
 | Provider | Send as | Supported flows |
 |---|---|---|
 | Stripe | omit `paymentProvider` or send `"stripe"` | Membership, courses, webinars, donations, billing portal |
-| PayPal | `"paypal"` | One-time course, webinar, and donation payments |
-| LINE Pay | `"line_pay"` or `"linepay"` | One-time course, webinar, and donation payments |
+| PayPal | `"paypal"` | Membership, one-time course, webinar, and donation payments |
+| LINE Pay | `"line_pay"` or `"linepay"` | Membership, one-time course, webinar, and donation payments |
 
-Membership subscriptions and the billing portal are Stripe-only for now because they depend on Stripe subscriptions and Stripe's customer portal.
+Stripe memberships are recurring subscriptions and can be managed through the billing portal. PayPal and LINE Pay memberships are one-time annual membership purchases; the backend activates the membership after provider confirmation.
 
 ---
 
@@ -121,6 +122,7 @@ Course access rules in plain language:
 - **Low-cost members** automatically get low-cost courses, but they must buy premium courses individually before they can access them.
 - **Visitors and logged-in non-members** do not get low-cost or premium courses through membership access. They must purchase each low-cost or premium course individually. Because course checkout requires a JWT, logged-out visitors should be prompted to sign up or log in before checkout.
 - **Premium members** automatically get both low-cost and premium courses.
+- Purchase buttons may still be shown to active members. The checkout endpoints allow any logged-in user to buy a paid course or webinar as long as they are not already enrolled in that course or registered for that webinar.
 
 Helper:
 
@@ -245,7 +247,7 @@ const user = await res.json();
 
 Example picture:
 ```text
-User submits Google Form -> Apps Script saves application -> Frontend polls /me -> Show plan picker
+User submits website form -> Backend saves application -> Show plan picker
 ```
 
 Example how to use:
@@ -253,7 +255,7 @@ Example how to use:
 const res = await fetch(`${API_URL}/api/membership-applications/me`, {
   headers: { Authorization: `Bearer ${jwt}` },
 });
-if (res.status === 404) showGoogleFormButton();
+if (res.status === 404) showMembershipApplicationForm();
 if (res.ok) showPlanPicker(await res.json());
 ```
 
@@ -290,11 +292,11 @@ const plans = await res.json();
 | Authentication | JWT required |
 | Middleware | Custom payment route; `policies: []`, `middlewares: []`; Strapi JWT auth applies |
 | Response status | `200` checkout created, `400` business rule/config error, `401` missing/invalid JWT |
-| Response JSON | `{ "url": "https://checkout.stripe.com/c/pay/...", "id": "cs_test_a1...", "provider": "stripe" }` |
+| Response JSON | `{ "url": "https://checkout-provider.example/...", "id": "payment_id", "provider": "paypal" }` |
 
 Example picture:
 ```text
-Plan picker -> POST membership checkout -> Stripe Checkout -> /membership/success -> Poll /users/me
+Plan picker -> POST membership checkout -> Hosted payment -> /membership/success -> Poll /users/me
 ```
 
 Example how to use:
@@ -305,7 +307,7 @@ const res = await fetch(`${API_URL}/api/payments/checkout/membership`, {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${jwt}`,
   },
-  body: JSON.stringify({ planId }),
+  body: JSON.stringify({ planId, paymentProvider: 'line_pay' }),
 });
 const checkout = await res.json();
 window.location.href = checkout.url;
@@ -498,7 +500,8 @@ PayPal approval -> GET backend callback -> Capture order -> Grant access -> Fron
 Example how to use:
 ```ts
 // Frontend does not call this directly.
-// Use the checkout.url returned by /api/payments/checkout/course,
+// Use the checkout.url returned by /api/payments/checkout/membership,
+// /api/payments/checkout/course,
 // /api/payments/checkout/webinar, or /api/payments/checkout/donation.
 window.location.href = checkout.url;
 ```
@@ -522,7 +525,8 @@ LINE Pay approval -> GET backend callback -> Confirm transaction -> Grant access
 Example how to use:
 ```ts
 // Frontend does not call this directly.
-// Use the checkout.url returned by /api/payments/checkout/course,
+// Use the checkout.url returned by /api/payments/checkout/membership,
+// /api/payments/checkout/course,
 // /api/payments/checkout/webinar, or /api/payments/checkout/donation.
 window.location.href = checkout.url;
 ```
@@ -580,12 +584,33 @@ Same response shape as register. Error: 400 `Invalid identifier or password`.
 
 ### 5.2 Membership application
 
-This is the Google Form intake. **The frontend never POSTs the application** — Apps Script does that server-to-server. The frontend's job: redirect users to the form and check whether their application is on file.
+The frontend submits this form directly from the website. The user's account email is used automatically from the JWT, so do not ask users to type their email again unless you only need it for display.
 
-#### Google Form link
-`https://forms.gle/EY6e6YU4tx1ab5Vo8`
-
-The form auto-collects the user's Google email. Tell users to **either** sign in to the same Google account whose email matches their platform account, **or** type their platform email manually if a separate field is exposed.
+#### `POST /api/membership-applications`
+Create or update the logged-in user's membership application.
+```
+Authorization: Bearer <jwt>
+Content-Type: application/json
+```
+```json
+{
+  "fullName": "Alice Wong",
+  "birthday": "1990-01-01",
+  "idNumber": "A123456789",
+  "gender": "Female",
+  "positionTitle": "Engineer",
+  "isUniversityStudent": "No",
+  "address": "Taipei",
+  "phone": "0912345678",
+  "lineId": "alicew",
+  "bankTransferInfo": "12345",
+  "questionsNeeds": "No questions right now"
+}
+```
+**200**
+```json
+{ "ok": true, "id": 4, "email": "alice@example.com" }
+```
 
 #### `GET /api/membership-applications/me`
 Check whether the logged-in user's application has landed.
@@ -616,7 +641,7 @@ Authorization: Bearer <jwt>
 { "data": null, "error": { "status": 404, "name": "NotFoundError", "message": "No application on file" } }
 ```
 
-**Use this to** decide whether to show the form CTA or the plan picker. Poll every 5–10s while the user has the form tab open — Apps Script delivery has a few-second lag.
+**Use this to** decide whether to show the website application form or the plan picker.
 
 ---
 
@@ -630,16 +655,18 @@ Authorization: Bearer <jwt>
 Returns array of plans, each with `id`, `Name`, `accessLevel` (`LOW`/`PREMIUM`), `Price`, `Duration`, `discountPercentage`. *(Note: field names start with capitals — `Name`, `Price`, `Duration` — that's a Strapi quirk.)*
 
 #### `POST /api/payments/checkout/membership`
-Initiate a subscription Checkout.
+Initiate a hosted membership checkout.
 ```json
 // Request
-{ "planId": 1 }
+{ "planId": 1, "paymentProvider": "paypal" }
 ```
 **200**
 ```json
-{ "url": "https://checkout.stripe.com/c/pay/cs_test_a1...", "id": "cs_test_a1..." }
+{ "url": "https://checkout-provider.example/...", "id": "payment_id", "provider": "paypal" }
 ```
 **Redirect:** `window.location.href = response.url`.
+
+Omit `paymentProvider` to use Stripe, or send `"paypal"` / `"line_pay"` for those hosted checkout flows. Stripe creates a recurring subscription. PayPal and LINE Pay create a one-time annual membership for the selected plan duration.
 
 **Errors** (most common):
 | Status | Message | What happened |
@@ -647,12 +674,13 @@ Initiate a subscription Checkout.
 | 401 | `Missing or invalid credentials` | JWT missing/expired |
 | 400 | `planId required` | You forgot the body field |
 | 400 | `Plan not found or inactive` | Wrong id or plan disabled |
+| 400 | `Plan has no price set` | Backend admin hasn't configured the plan price |
 | 400 | `Plan has no Stripe price configured` | Backend admin hasn't wired Stripe IDs |
 | 400 | `Please complete the membership application form before purchasing` | User skipped the form. Redirect to it. |
 | 400 | `You already have an active membership; use the billing portal to manage it` | Send them to `/api/payments/portal` |
 
-#### Stripe redirect targets
-After payment, Stripe sends user back to:
+#### Membership redirect targets
+After payment, Stripe, PayPal, or LINE Pay sends user back to:
 - Success: `${CLIENT_URL}/membership/success`
 - Cancel: `${CLIENT_URL}/membership/cancel`
 
@@ -680,10 +708,9 @@ async function pollForMembership(maxAttempts = 15, delayMs = 2000) {
 
 ### 5.4 Course purchase
 
-For courses where `tier === 'lowcost'` or `tier === 'premium'` and the user's membership doesn't already cover them.
+For paid courses where `tier === 'lowcost'` or `tier === 'premium'`.
 
-- A **LOW** member must purchase a `premium` course individually.
-- A logged-in **non-member/visitor account** must purchase both `lowcost` and `premium` courses individually.
+- Any logged-in user can purchase a paid course, including active LOW and PREMIUM members.
 - A logged-out visitor must sign up or log in first, then purchase the course; this endpoint requires a JWT.
 
 #### `POST /api/payments/checkout/course`
@@ -705,7 +732,6 @@ Omit `paymentProvider` to use Stripe. Send `"paypal"` or `"line_pay"` to redirec
 | 404 | `Course not found` |
 | 400 | `Course is free` *(don't show buy button for free tier)* |
 | 400 | `Course has no price set` *(backend data issue)* |
-| 400 | `Your membership already covers this course` |
 | 400 | `You are already enrolled in this course` |
 
 **Redirect targets:** `${CLIENT_URL}/courses/{courseId}/success` and `/cancel`.
@@ -753,7 +779,7 @@ Look for `webinar_registrations[].webinar.id === <webinarId>` with `state === 'c
 
 ### 5.6 Donations
 
-For one-time donations to support the Social Emotional Learning platform. Donations use Stripe-hosted Checkout and are a **public visitor flow**: anyone can donate, including non-members, members, logged-out visitors, and people who have never signed up for the website.
+For one-time donations to support the Social Emotional Learning platform. Donations use hosted checkout and are a **public visitor flow**: anyone can donate, including non-members, members, logged-out visitors, and people who have never signed up for the website.
 
 #### `POST /api/payments/checkout/donation`
 ```json
@@ -842,13 +868,13 @@ The full happy path from first visit to active member to course access:
    POST /api/auth/local/register  ───────────► JWT
         │
         ▼
-   Frontend redirects to Google Form (or opens new tab)
+   Show website membership application form
         │
         ▼ (user fills, submits)
-   Apps Script POSTs to backend (server-to-server, ~2-5s)
+   POST /api/membership-applications
         │
         ▼
-   Frontend polls GET /api/membership-applications/me every 5-10s
+   GET /api/membership-applications/me
         │
         ▼ (200 once application lands)
    Show plan picker:
@@ -858,7 +884,7 @@ The full happy path from first visit to active member to course access:
    POST /api/payments/checkout/membership { planId }
         │
         ▼ (200 returns url)
-   window.location.href = url  ─────────────► Stripe-hosted checkout
+   window.location.href = url  ─────────────► hosted checkout
                                                   │
                                                   ▼ (user pays with 4242...)
                                             Stripe redirects to:
@@ -898,12 +924,10 @@ NOT_LOGGED_IN
     │ (login/register)
     ▼
 LOGGED_IN_NO_APPLICATION
-    │ (link to Google Form, then poll /me)
-    │ ─── 404 (still no application) ──┐
-    │                                  ▼
-    │                          (poll every 10s)
+    │ (submit website application form)
+    │ ─── POST /membership-applications
     │
-    │ ─── 200 (application landed) ───────────┐
+    │ ─── 200 (application saved) ───────────┐
     │                                         ▼
     │                                READY_TO_PAY
     │                                         │ (user picks plan, clicks buy)
@@ -911,7 +935,7 @@ LOGGED_IN_NO_APPLICATION
     │                                  POST /checkout/membership
     │                                         │ (200, redirect)
     │                                         ▼
-    │                                  PAYING (on Stripe)
+    │                                  PAYING (hosted checkout)
     │                                         │ (user pays)
     │                                         ▼
     │                                  POLLING_FOR_MEMBERSHIP
@@ -929,7 +953,7 @@ LOGGED_IN
 CHECKING_OUT (POST /checkout/{course|webinar})
     │ (200 with url)
     ▼
-PAYING (on Stripe)
+PAYING (hosted checkout)
     │
     ▼
 POLLING_FOR_ENROLLMENT_OR_REGISTRATION
@@ -982,10 +1006,10 @@ The backend team must have these running:
 1. Strapi: `npm run develop` from `kmw-backend/`
 2. Stripe webhook forwarder: `stripe listen --forward-to localhost:1337/api/payments/webhook`
 
-Without #2, payments succeed on Stripe's side but the membership/enrollment row is never created — the success page would poll forever. If your testing breaks at the polling step, this is the most likely cause.
+Without #2, Stripe payments succeed on Stripe's side but the membership/enrollment row is never created — the success page would poll forever. PayPal and LINE Pay use their callback routes instead.
 
-### Test the form intake without using Google
-There's a helper script for backend devs: `kmw-backend/scripts/test-membership-flow.sh` — registers a fresh user, simulates a form submission with HMAC, calls `/me`, and produces a Stripe checkout URL ready to pay. Useful for end-to-end demos.
+### Test the website application form
+Submit `POST /api/membership-applications` with a logged-in user's JWT, then call `GET /api/membership-applications/me` to confirm the saved application before checkout.
 
 ---
 

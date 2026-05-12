@@ -4,6 +4,12 @@ module.exports = {
   routes: [
     {
       method: 'POST',
+      path: '/membership-applications',
+      handler: 'membership-application.submit',
+      config: { policies: [], middlewares: [] },
+    },
+    {
+      method: 'POST',
       path: '/membership-applications/intake',
       handler: 'membership-application.intake',
       config: { auth: false, policies: [], middlewares: [] },

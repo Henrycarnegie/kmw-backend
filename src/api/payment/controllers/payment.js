@@ -11,15 +11,6 @@ const PAYMENT_PROVIDER = {
   LINE_PAY: 'line_pay',
 };
 
-function membershipCovers(accessLevel, tier) {
-  if (tier === 'free') return true;
-  if (!accessLevel) return false;
-  const lvl = String(accessLevel).toLowerCase();
-  if (lvl === 'premium') return true;
-  if (lvl === 'low' && tier === 'lowcost') return true;
-  return false;
-}
-
 async function getActiveMembership(strapi, userId) {
   const found = await strapi.entityService.findMany('api::membership.membership', {
     filters: {
@@ -38,6 +29,32 @@ async function getApplicationByEmail(strapi, email) {
     limit: 1,
   });
   return found && found[0];
+}
+
+function getMembershipDates(durationDays) {
+  const start = new Date();
+  const end = new Date(start);
+  end.setDate(end.getDate() + (durationDays || 365));
+  return { start, end };
+}
+
+function getPlanAccessLevel(plan) {
+  return String(plan.accessLevel || '').toLowerCase();
+}
+
+async function createPendingMembership(strapi, userId, plan) {
+  const { start, end } = getMembershipDates(plan.Duration);
+  return strapi.entityService.create('api::membership.membership', {
+    data: {
+      users_permissions_user: userId,
+      subscriptionStatus: 'pending_payment',
+      accessLevel: getPlanAccessLevel(plan),
+      StartDate: start,
+      endDate: end,
+      googleFormSubmitted: true,
+      publishedAt: new Date(),
+    },
+  });
 }
 
 function normalizeDonationAmount(amount) {
@@ -170,6 +187,12 @@ async function linePayPost(apiPath, body) {
 }
 
 async function createPendingExternalPayment(strapi, provider, reference, data) {
+  let membershipId = data.membershipId;
+  if (!membershipId && data.purchaseType === 'membership' && data.userId && data.membershipPlan) {
+    const membership = await createPendingMembership(strapi, data.userId, data.membershipPlan);
+    membershipId = membership.id;
+  }
+
   return strapi.entityService.create('api::payment.payment', {
     data: {
       Amount: data.amount,
@@ -181,6 +204,7 @@ async function createPendingExternalPayment(strapi, provider, reference, data) {
       users_permissions_user: data.userId || undefined,
       course: data.courseId || undefined,
       webinar: data.webinarId || undefined,
+      membership: membershipId || undefined,
       donorName: data.donorName || undefined,
       donorEmail: data.donorEmail || undefined,
       donorMessage: data.donorMessage || undefined,
@@ -192,13 +216,14 @@ async function createPendingExternalPayment(strapi, provider, reference, data) {
 async function findPaymentByReference(strapi, provider, reference) {
   const found = await strapi.entityService.findMany('api::payment.payment', {
     filters: { Provider: provider, transactionReference: reference },
-    populate: ['users_permissions_user', 'course', 'webinar'],
+    populate: ['users_permissions_user', 'course', 'webinar', 'membership'],
     limit: 1,
   });
   return found && found[0];
 }
 
 function paymentSuccessPath(payment) {
+  if (payment.purchaseType === 'membership') return '/membership/success';
   if (payment.purchaseType === 'course') return `/courses/${payment.course?.id || payment.course}/success`;
   if (payment.purchaseType === 'webinar') return `/webinars/${payment.webinar?.id || payment.webinar}/success`;
   if (payment.purchaseType === 'donation') return '/donate/success';
@@ -207,6 +232,27 @@ function paymentSuccessPath(payment) {
 
 async function grantPurchasedAccess(strapi, payment) {
   const userId = payment.users_permissions_user?.id || payment.users_permissions_user;
+
+  if (payment.purchaseType === 'membership') {
+    const membership = payment.membership;
+    const membershipId = membership?.id || membership;
+    if (!membershipId) return;
+
+    const oldStart = membership?.StartDate ? new Date(membership.StartDate) : null;
+    const oldEnd = membership?.endDate ? new Date(membership.endDate) : null;
+    const durationDays = oldStart && oldEnd && oldEnd > oldStart
+      ? Math.max(1, Math.ceil((oldEnd.getTime() - oldStart.getTime()) / 86400000))
+      : 365;
+    const { start, end } = getMembershipDates(durationDays);
+
+    await strapi.entityService.update('api::membership.membership', membershipId, {
+      data: {
+        subscriptionStatus: 'active',
+        StartDate: start,
+        endDate: end,
+      },
+    });
+  }
 
   if (payment.purchaseType === 'course') {
     const courseId = payment.course?.id || payment.course;
@@ -356,9 +402,6 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     const { planId } = ctx.request.body || {};
     const provider = normalizePaymentProvider(ctx.request.body?.paymentProvider || ctx.request.body?.provider);
     if (!isSupportedPaymentProvider(provider)) return ctx.badRequest('Unsupported payment provider');
-    if (provider !== PAYMENT_PROVIDER.STRIPE) {
-      return ctx.badRequest('Membership checkout currently supports Stripe only');
-    }
     if (!planId) return ctx.badRequest('planId required');
 
     const application = await getApplicationByEmail(strapi, user.email);
@@ -368,10 +411,29 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
 
     const plan = await strapi.entityService.findOne('api::subscrition-plan.subscrition-plan', planId);
     if (!plan || !plan.active) return ctx.badRequest('Plan not found or inactive');
-    if (!plan.stripePriceId) return ctx.badRequest('Plan has no Stripe price configured');
+    if (!plan.Price || plan.Price <= 0) return ctx.badRequest('Plan has no price set');
 
     const existing = await getActiveMembership(strapi, user.id);
     if (existing) return ctx.badRequest('You already have an active membership; use the billing portal to manage it');
+
+    if (provider !== PAYMENT_PROVIDER.STRIPE) {
+      try {
+        ctx.body = await createHostedCheckout(strapi, provider, {
+          amount: Number(plan.Price),
+          title: plan.Name,
+          purchaseType: 'membership',
+          userId: user.id,
+          membershipPlan: plan,
+          cancelPath: '/membership/cancel',
+        });
+        return;
+      } catch (err) {
+        strapi.log.error(`${provider} checkout (membership) error:`, err);
+        return ctx.internalServerError(err.message);
+      }
+    }
+
+    if (!plan.stripePriceId) return ctx.badRequest('Plan has no Stripe price configured');
 
     try {
       const session = await stripe.checkout.sessions.create({
@@ -408,11 +470,6 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     if (!course) return ctx.notFound('Course not found');
     if (course.tier === 'free') return ctx.badRequest('Course is free');
     if (!course.price || course.price <= 0) return ctx.badRequest('Course has no price set');
-
-    const membership = await getActiveMembership(strapi, user.id);
-    if (membership && membershipCovers(membership.accessLevel, course.tier)) {
-      return ctx.badRequest('Your membership already covers this course');
-    }
 
     const enrollments = await strapi.entityService.findMany('api::enrollment.enrollment', {
       filters: { users_permissions_user: user.id, course: courseId },
@@ -476,11 +533,6 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     if (!webinar) return ctx.notFound('Webinar not found');
     if (webinar.tier === 'free') return ctx.badRequest('Webinar is free');
     if (!webinar.price || webinar.price <= 0) return ctx.badRequest('Webinar has no price set');
-
-    const membership = await getActiveMembership(strapi, user.id);
-    if (membership && membershipCovers(membership.accessLevel, webinar.tier)) {
-      return ctx.badRequest('Your membership already covers this webinar');
-    }
 
     const registrations = await strapi.entityService.findMany('api::webinar-registration.webinar-registration', {
       filters: { learner: user.id, webinar: webinarId },
