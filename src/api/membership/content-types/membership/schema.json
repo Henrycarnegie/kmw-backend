@@ -30,11 +30,7 @@
     },
     "accessLevel": {
       "type": "enumeration",
-      "enum": [
-        "free_user",
-        "low",
-        "premium"
-      ]
+      "enum": ["free_user", "low", "premium"]
     },
     "startDate": {
       "type": "datetime",
@@ -49,10 +45,6 @@
     },
     "stripeCustomerId": {
       "type": "string"
-    },
-    "googleFormSubmitted": {
-      "type": "boolean",
-      "default": false
     },
     "subscription_plan": {
       "type": "relation",

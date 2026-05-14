@@ -32,14 +32,15 @@
       "type": "integer",
       "required": true
     },
-    "discountPercentage": {
-      "type": "integer"
-    },
     "stripePriceId": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "stripeRenewalCouponId": {
       "type": "string"
+    },
+    "discountPercentage": {
+      "type": "integer"
     },
     "active": {
       "type": "boolean",

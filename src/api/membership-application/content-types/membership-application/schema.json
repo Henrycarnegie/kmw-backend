@@ -17,37 +17,43 @@
       "unique": true
     },
     "planId": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "fullName": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "birthday": {
-      "type": "date"
+      "type": "date",
+      "required": true
     },
     "idNumber": {
       "type": "string"
     },
     "gender": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "positionTitle": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "isUniversityStudent": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "address": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "phone": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "lineId": {
-      "type": "string"
-    },
-    "googleFormResponseId": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "submittedAt": {
       "type": "datetime"

@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Membership Application Routes
+ */
+
 module.exports = {
   routes: [
     {
@@ -7,12 +11,6 @@ module.exports = {
       path: '/membership-applications',
       handler: 'membership-application.submit',
       config: { policies: [], middlewares: [] },
-    },
-    {
-      method: 'POST',
-      path: '/membership-applications/intake',
-      handler: 'membership-application.intake',
-      config: { auth: false, policies: [], middlewares: [] },
     },
     {
       method: 'GET',

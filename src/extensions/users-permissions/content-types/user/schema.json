@@ -70,7 +70,7 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::membership.membership",
-      "mappedBy": "users_permissions_user"
+      "mappedBy": "user"
     },
     "enrollments": {
       "type": "relation",
@@ -107,6 +107,11 @@
       "relation": "oneToMany",
       "target": "api::payment.payment",
       "mappedBy": "users_permissions_user"
+    },
+    "subscriptionLevel": {
+      "type": "enumeration",
+      "enum": ["free_user", "low", "premium"],
+      "default": "free_user"
     }
   }
 }

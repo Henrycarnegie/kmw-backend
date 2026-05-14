@@ -16,11 +16,13 @@
       "required": true
     },
     "description": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "language": {
       "type": "string",
-      "default": "en"
+      "default": "en",
+      "required": true
     },
     "is_published": {
       "type": "boolean",
@@ -37,20 +39,22 @@
       ]
     },
     "price": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true
     },
     "thumbnail": {
       "type": "media",
       "multiple": false,
+      "required": true,
       "allowedTypes": [
         "images",
         "files",
-        "videos",
-        "audios"
+        "videos"
       ]
     },
     "instructor_information": {
-      "type": "text"
+      "type": "text",
+      "required": true
     },
     "enrollments": {
       "type": "relation",

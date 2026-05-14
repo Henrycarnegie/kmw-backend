@@ -631,23 +631,26 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
     enrollments: Schema.Attribute.Relation<
       'oneToMany',
       'api::enrollment.enrollment'
     >;
-    instructor_information: Schema.Attribute.Text;
+    instructor_information: Schema.Attribute.Text & Schema.Attribute.Required;
     is_published: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    language: Schema.Attribute.String & Schema.Attribute.DefaultTo<'en'>;
+    language: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'en'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::course.course'
     > &
       Schema.Attribute.Private;
-    price: Schema.Attribute.Decimal;
+    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos'> &
+      Schema.Attribute.Required;
     tier: Schema.Attribute.Enumeration<['free', 'lowcost', 'premium']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'free'>;
@@ -818,29 +821,28 @@ export interface ApiMembershipApplicationMembershipApplication
     draftAndPublish: false;
   };
   attributes: {
-    address: Schema.Attribute.Text;
-    birthday: Schema.Attribute.Date;
+    address: Schema.Attribute.Text & Schema.Attribute.Required;
+    birthday: Schema.Attribute.Date & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
-    fullName: Schema.Attribute.String;
-    gender: Schema.Attribute.String;
-    googleFormResponseId: Schema.Attribute.String;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    gender: Schema.Attribute.String & Schema.Attribute.Required;
     idNumber: Schema.Attribute.String;
-    isUniversityStudent: Schema.Attribute.String;
-    lineId: Schema.Attribute.String;
+    isUniversityStudent: Schema.Attribute.String & Schema.Attribute.Required;
+    lineId: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::membership-application.membership-application'
     > &
       Schema.Attribute.Private;
-    phone: Schema.Attribute.String;
-    planId: Schema.Attribute.Integer;
-    positionTitle: Schema.Attribute.String;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    planId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    positionTitle: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     rawAnswers: Schema.Attribute.JSON;
     submittedAt: Schema.Attribute.DateTime;
@@ -870,8 +872,6 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     endDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    googleFormSubmitted: Schema.Attribute.Boolean &
-      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1152,7 +1152,7 @@ export interface ApiSubscriptionPlanSubscriptionPlan
     name: Schema.Attribute.String & Schema.Attribute.Required;
     price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    stripePriceId: Schema.Attribute.String;
+    stripePriceId: Schema.Attribute.String & Schema.Attribute.Required;
     stripeRenewalCouponId: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1793,6 +1793,10 @@ export interface PluginUsersPermissionsUser
       'oneToMany',
       'api::submission.submission'
     >;
+    subscriptionLevel: Schema.Attribute.Enumeration<
+      ['free_user', 'low', 'premium']
+    > &
+      Schema.Attribute.DefaultTo<'free_user'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

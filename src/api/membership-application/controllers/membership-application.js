@@ -80,45 +80,7 @@ module.exports = {
     ctx.body = { ok: true, id: row.id, email: row.email };
   },
 
-  async intake(ctx) {
-    const sig = ctx.request.headers['x-form-signature'];
-    const raw = ctx.request.body && ctx.request.body[Symbol.for('unparsedBody')];
-    const secret = process.env.FORM_INTAKE_SECRET;
 
-    if (!secret) {
-      strapi.log.error('FORM_INTAKE_SECRET not configured');
-      return ctx.internalServerError('Server misconfigured');
-    }
-    if (!sig || !raw) return ctx.badRequest('Missing signature or body');
-
-    const expected = crypto.createHmac('sha256', secret).update(raw).digest('hex');
-    let valid = false;
-    try {
-      valid = sig.length === expected.length &&
-        crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
-    } catch (e) {
-      valid = false;
-    }
-    if (!valid) return ctx.unauthorized('Invalid form signature');
-
-    const payload = ctx.request.body || {};
-    const email = (payload.email || '').toLowerCase().trim();
-    if (!email) return ctx.badRequest('email required');
-
-    const fields = normalizeAnswers(payload.answers);
-
-    const data = {
-      email,
-      ...fields,
-      googleFormResponseId: payload.googleFormResponseId,
-      submittedAt: payload.submittedAt ? new Date(payload.submittedAt) : new Date(),
-      rawAnswers: payload.answers || null,
-    };
-
-    const row = await upsertApplication(email, data);
-
-    ctx.body = { ok: true, id: row.id, email: row.email };
-  },
 
   async me(ctx) {
     const user = ctx.state.user;
