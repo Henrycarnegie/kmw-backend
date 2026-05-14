@@ -4,7 +4,7 @@
   "info": {
     "singularName": "payment",
     "pluralName": "payments",
-    "displayName": "Payment"
+    "displayName": "[Payment] - Main"
   },
   "options": {
     "draftAndPublish": true

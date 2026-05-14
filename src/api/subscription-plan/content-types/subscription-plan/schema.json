@@ -4,7 +4,7 @@
   "info": {
     "singularName": "subscription-plan",
     "pluralName": "subscription-plans",
-    "displayName": "Subscription Plan"
+    "displayName": "[Subscription] - Plan"
   },
   "options": {
     "draftAndPublish": true
@@ -18,7 +18,11 @@
     "accessLevel": {
       "type": "enumeration",
       "required": true,
-      "enum": ["free_user", "low", "premium"]
+      "enum": [
+        "free_user",
+        "low",
+        "premium"
+      ]
     },
     "price": {
       "type": "decimal",

@@ -473,7 +473,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
     description: 'Create your blog content';
-    displayName: 'Article';
+    displayName: '[Article] - Main';
     pluralName: 'articles';
     singularName: 'article';
   };
@@ -513,7 +513,7 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   collectionName: 'authors';
   info: {
     description: 'Create authors for your content';
-    displayName: 'Author';
+    displayName: '[Author] - Main';
     pluralName: 'authors';
     singularName: 'author';
   };
@@ -545,7 +545,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
     description: 'Organize your content into categories';
-    displayName: 'Category';
+    displayName: '[Article] - Category';
     pluralName: 'categories';
     singularName: 'category';
   };
@@ -576,7 +576,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
 export interface ApiCertificateCertificate extends Struct.CollectionTypeSchema {
   collectionName: 'certificates';
   info: {
-    displayName: 'Certificate';
+    displayName: '[Course] - Certificate';
     pluralName: 'certificates';
     singularName: 'certificate';
   };
@@ -615,7 +615,7 @@ export interface ApiCertificateCertificate extends Struct.CollectionTypeSchema {
 export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
   collectionName: 'courses';
   info: {
-    displayName: 'Course';
+    displayName: '[Course] - Main Content';
     pluralName: 'courses';
     singularName: 'course';
   };
@@ -661,7 +661,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
 export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
   collectionName: 'enrollments';
   info: {
-    displayName: 'Enrollment';
+    displayName: '[Course] - Enrollment';
     pluralName: 'enrollments';
     singularName: 'enrollment';
   };
@@ -704,7 +704,7 @@ export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
 export interface ApiForumReplyForumReply extends Struct.CollectionTypeSchema {
   collectionName: 'forum_replies';
   info: {
-    displayName: 'Forum Reply';
+    displayName: '[Forum] - Reply';
     pluralName: 'forum-replies';
     singularName: 'forum-reply';
   };
@@ -740,7 +740,7 @@ export interface ApiForumReplyForumReply extends Struct.CollectionTypeSchema {
 export interface ApiForumThreadForumThread extends Struct.CollectionTypeSchema {
   collectionName: 'forum_threads';
   info: {
-    displayName: 'Forum Thread';
+    displayName: '[Forum] - Thread';
     pluralName: 'forum-threads';
     singularName: 'forum-thread';
   };
@@ -810,7 +810,7 @@ export interface ApiMembershipApplicationMembershipApplication
   extends Struct.CollectionTypeSchema {
   collectionName: 'membership_applications';
   info: {
-    displayName: 'Membership Application Form';
+    displayName: '[Membership] - Application';
     pluralName: 'membership-applications';
     singularName: 'membership-application';
   };
@@ -857,7 +857,7 @@ export interface ApiMembershipApplicationMembershipApplication
 export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
   collectionName: 'memberships';
   info: {
-    displayName: 'Membership';
+    displayName: '[Membership] - Main';
     pluralName: 'memberships';
     singularName: 'membership';
   };
@@ -910,7 +910,7 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
 export interface ApiModuleModule extends Struct.CollectionTypeSchema {
   collectionName: 'modules';
   info: {
-    displayName: 'Module';
+    displayName: '[Module] - Main';
     pluralName: 'modules';
     singularName: 'module';
   };
@@ -959,7 +959,7 @@ export interface ApiModuleModule extends Struct.CollectionTypeSchema {
 export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
   collectionName: 'payments';
   info: {
-    displayName: 'Payment';
+    displayName: '[Payment] - Main';
     pluralName: 'payments';
     singularName: 'payment';
   };
@@ -1015,7 +1015,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
 export interface ApiQuizQuiz extends Struct.CollectionTypeSchema {
   collectionName: 'quizzes';
   info: {
-    displayName: 'Quiz';
+    displayName: '[Module] - Quiz';
     pluralName: 'quizzes';
     singularName: 'quiz';
   };
@@ -1046,7 +1046,7 @@ export interface ApiQuizQuiz extends Struct.CollectionTypeSchema {
 export interface ApiResourceResource extends Struct.CollectionTypeSchema {
   collectionName: 'resources';
   info: {
-    displayName: 'Resource';
+    displayName: '[Resource] - Main';
     pluralName: 'resources';
     singularName: 'resource';
   };
@@ -1077,45 +1077,10 @@ export interface ApiResourceResource extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiSelProjectSelProject extends Struct.CollectionTypeSchema {
-  collectionName: 'sel_projects';
-  info: {
-    displayName: 'SEL Project';
-    pluralName: 'sel-projects';
-    singularName: 'sel-project';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::sel-project.sel-project'
-    > &
-      Schema.Attribute.Private;
-    project_url: Schema.Attribute.String;
-    publishedAt: Schema.Attribute.DateTime;
-    state: Schema.Attribute.Enumeration<['draft, active, completed']>;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    users_permissions_user: Schema.Attribute.Relation<
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-  };
-}
-
 export interface ApiSubmissionSubmission extends Struct.CollectionTypeSchema {
   collectionName: 'submissions';
   info: {
-    displayName: 'Submission';
+    displayName: '[Module] - Submission';
     pluralName: 'submissions';
     singularName: 'submission';
   };
@@ -1158,7 +1123,7 @@ export interface ApiSubscriptionPlanSubscriptionPlan
   extends Struct.CollectionTypeSchema {
   collectionName: 'subscription_plans';
   info: {
-    displayName: 'Subscription Plan';
+    displayName: '[Subscription] - Plan';
     pluralName: 'subscription-plans';
     singularName: 'subscription-plan';
   };
@@ -1199,7 +1164,7 @@ export interface ApiUnitProgressUnitProgress
   extends Struct.CollectionTypeSchema {
   collectionName: 'unit_progresses';
   info: {
-    displayName: 'Unit Progress';
+    displayName: '[Module] - Unit Progress';
     pluralName: 'unit-progresses';
     singularName: 'unit-progress';
   };
@@ -1237,7 +1202,7 @@ export interface ApiWebinarRegistrationWebinarRegistration
   extends Struct.CollectionTypeSchema {
   collectionName: 'webinar_registrations';
   info: {
-    displayName: 'Webinar Registration';
+    displayName: '[Webinar] - Registration';
     pluralName: 'webinar-registrations';
     singularName: 'webinar-registration';
   };
@@ -1276,7 +1241,7 @@ export interface ApiWebinarRegistrationWebinarRegistration
 export interface ApiWebinarWebinar extends Struct.CollectionTypeSchema {
   collectionName: 'webinars';
   info: {
-    displayName: 'Webinar';
+    displayName: '[Webinar] - Main';
     pluralName: 'webinars';
     singularName: 'webinar';
   };
@@ -1779,10 +1744,6 @@ export interface PluginUsersPermissionsUser
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    certificates: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::certificate.certificate'
-    >;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -1827,10 +1788,6 @@ export interface PluginUsersPermissionsUser
     role: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.role'
-    >;
-    sel_project: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::sel-project.sel-project'
     >;
     submissions: Schema.Attribute.Relation<
       'oneToMany',
@@ -1879,7 +1836,6 @@ declare module '@strapi/strapi' {
       'api::payment.payment': ApiPaymentPayment;
       'api::quiz.quiz': ApiQuizQuiz;
       'api::resource.resource': ApiResourceResource;
-      'api::sel-project.sel-project': ApiSelProjectSelProject;
       'api::submission.submission': ApiSubmissionSubmission;
       'api::subscription-plan.subscription-plan': ApiSubscriptionPlanSubscriptionPlan;
       'api::unit-progress.unit-progress': ApiUnitProgressUnitProgress;

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "unit-progress",
     "pluralName": "unit-progresses",
-    "displayName": "Unit Progress"
+    "displayName": "[Module] - Unit Progress"
   },
   "options": {
     "draftAndPublish": true

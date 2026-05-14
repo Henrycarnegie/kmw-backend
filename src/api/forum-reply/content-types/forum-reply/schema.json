@@ -4,7 +4,7 @@
   "info": {
     "singularName": "forum-reply",
     "pluralName": "forum-replies",
-    "displayName": "Forum Reply"
+    "displayName": "[Forum] - Reply"
   },
   "options": {
     "draftAndPublish": true

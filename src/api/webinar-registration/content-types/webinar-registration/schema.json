@@ -4,7 +4,7 @@
   "info": {
     "singularName": "webinar-registration",
     "pluralName": "webinar-registrations",
-    "displayName": "Webinar Registration"
+    "displayName": "[Webinar] - Registration"
   },
   "options": {
     "draftAndPublish": true

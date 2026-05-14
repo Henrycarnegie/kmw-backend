@@ -102,18 +102,6 @@
       "target": "api::forum-reply.forum-reply",
       "mappedBy": "users_permissions_user"
     },
-    "sel_project": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::sel-project.sel-project",
-      "mappedBy": "users_permissions_user"
-    },
-    "certificates": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::certificate.certificate",
-      "mappedBy": "users_permissions_user"
-    },
     "payments": {
       "type": "relation",
       "relation": "oneToMany",

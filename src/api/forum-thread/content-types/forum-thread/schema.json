@@ -4,7 +4,7 @@
   "info": {
     "singularName": "forum-thread",
     "pluralName": "forum-threads",
-    "displayName": "Forum Thread"
+    "displayName": "[Forum] - Thread"
   },
   "options": {
     "draftAndPublish": true

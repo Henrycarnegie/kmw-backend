@@ -4,7 +4,7 @@
   "info": {
     "singularName": "module",
     "pluralName": "modules",
-    "displayName": "Module"
+    "displayName": "[Module] - Main"
   },
   "options": {
     "draftAndPublish": true

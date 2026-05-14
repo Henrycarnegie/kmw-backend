@@ -4,7 +4,7 @@
   "info": {
     "singularName": "certificate",
     "pluralName": "certificates",
-    "displayName": "Certificate"
+    "displayName": "[Course] - Certificate"
   },
   "options": {
     "draftAndPublish": true

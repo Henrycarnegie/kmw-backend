@@ -4,7 +4,7 @@
   "info": {
     "singularName": "submission",
     "pluralName": "submissions",
-    "displayName": "Submission"
+    "displayName": "[Module] - Submission"
   },
   "options": {
     "draftAndPublish": true

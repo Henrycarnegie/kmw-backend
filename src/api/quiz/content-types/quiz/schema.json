@@ -4,7 +4,7 @@
   "info": {
     "singularName": "quiz",
     "pluralName": "quizzes",
-    "displayName": "Quiz"
+    "displayName": "[Module] - Quiz"
   },
   "options": {
     "draftAndPublish": true

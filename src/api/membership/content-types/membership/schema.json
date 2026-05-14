@@ -4,7 +4,7 @@
   "info": {
     "singularName": "membership",
     "pluralName": "memberships",
-    "displayName": "Membership"
+    "displayName": "[Membership] - Main"
   },
   "options": {
     "draftAndPublish": true
@@ -30,7 +30,11 @@
     },
     "accessLevel": {
       "type": "enumeration",
-      "enum": ["free_user", "low", "premium"]
+      "enum": [
+        "free_user",
+        "low",
+        "premium"
+      ]
     },
     "startDate": {
       "type": "datetime",
