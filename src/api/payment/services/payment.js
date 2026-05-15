@@ -531,7 +531,6 @@ module.exports = createCoreService("api::payment.payment", ({ strapi }) => ({
             accessLevel: getPlanAccessLevel(data.membershipPlan),
             startDate: start,
             endDate: end,
-            publishedAt: new Date(),
           },
         },
       );
@@ -553,7 +552,6 @@ module.exports = createCoreService("api::payment.payment", ({ strapi }) => ({
         donorEmail: data.donorEmail || undefined,
         donorMessage: data.donorMessage || undefined,
         membershipApplicationData: data.membershipApplicationData || undefined,
-        publishedAt: new Date(),
       },
     });
   },

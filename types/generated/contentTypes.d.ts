@@ -659,7 +659,7 @@ export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
     singularName: 'enrollment';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     completed: Schema.Attribute.Boolean;
@@ -854,7 +854,7 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     singularName: 'membership';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     accessLevel: Schema.Attribute.Enumeration<['free_user', 'low', 'premium']>;
@@ -871,8 +871,8 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
     startDate: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    stripeCustomerId: Schema.Attribute.String;
-    stripeSubscriptionId: Schema.Attribute.String;
+    stripeCustomerId: Schema.Attribute.String & Schema.Attribute.Unique;
+    stripeSubscriptionId: Schema.Attribute.String & Schema.Attribute.Unique;
     subscription_plan: Schema.Attribute.Relation<
       'manyToOne',
       'api::subscription-plan.subscription-plan'
@@ -954,7 +954,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     singularName: 'payment';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
@@ -1197,7 +1197,7 @@ export interface ApiWebinarRegistrationWebinarRegistration
     singularName: 'webinar-registration';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     cancelled_at: Schema.Attribute.DateTime;

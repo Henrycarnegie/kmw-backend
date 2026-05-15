@@ -7,7 +7,7 @@
     "displayName": "[Membership] - Main"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -41,10 +41,12 @@
       "required": true
     },
     "stripeSubscriptionId": {
-      "type": "string"
+      "type": "string",
+      "unique": true
     },
     "stripeCustomerId": {
-      "type": "string"
+      "type": "string",
+      "unique": true
     },
     "subscription_plan": {
       "type": "relation",
