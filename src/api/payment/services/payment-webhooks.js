@@ -27,8 +27,25 @@ async function syncUserSubscriptionLevel(strapi, userId) {
   const level = membership
     ? membership.accessLevel || "free_user"
     : "free_user";
+
+  // Find roles by type for best practice
+  const [membershipRole, authenticatedRole] = await Promise.all([
+    strapi
+      .query("plugin::users-permissions.role")
+      .findOne({ where: { type: "membership" } }),
+    strapi
+      .query("plugin::users-permissions.role")
+      .findOne({ where: { type: "authenticated" } }),
+  ]);
+
+  // Determine target role: 'membership' for active users, 'authenticated' for others
+  const targetRole = membership ? membershipRole : authenticatedRole;
+
   await strapi.entityService.update("plugin::users-permissions.user", userId, {
-    data: { subscriptionLevel: level },
+    data: {
+      subscriptionLevel: level,
+      role: targetRole ? targetRole.id : undefined,
+    },
   });
 }
 
